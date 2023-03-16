@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
 
 export const useTodoStore = defineStore('todo', {
 
   state: () => ({ 
+    return: {
+      edit_todo_id: 0,
+			edit_todo: ''
+    },
     todos: [
       {
         id: 1,
@@ -17,29 +20,21 @@ export const useTodoStore = defineStore('todo', {
   getters: {
 
     todos_completed: (state) => {
-      let check = null;
       if (state.todos) {
-        check = state.todos.filter(todo => (
-           todo.completed == true
-        ));
+        return state.todos.filter(todo => {
+          return todo.completed == true
+      });
       }
-      console.log(check)
-      return check
     },
 
     todos_open: (state) => {
-      let check = null;
       if (state.todos) {
         console.log("if")
-        check = state.todos.filter(todo => {
-          console.log(todo)
+        return state.todos.filter(todo => {
           return todo.completed == false
         });
       }
-      console.log(check)
-      return check
     }
-
   },
 
   actions: {
@@ -51,42 +46,62 @@ export const useTodoStore = defineStore('todo', {
     async toggleTodo(id) {
 
       // Change in local data
-      this.todos.data = this.todos.data.map(todo => {
+      this.todos = this.todos.map(todo => {
         if (todo.id == id) {
           todo.completed = !todo.completed;
           this.current_todo = todo;
         }
         return todo;
       });
+    },
 
+    addTodo(new_Todo) {
+			let new_id;
+      console.log("adding new todo")
 
-      // PUT request to server after toggle... :-)
-      await axios.put(`http://localhost:3000/todos/${id}`, {
-        title: this.current_todo.title,
-        completed: this.current_todo.completed
+			if (this.todos.length) {
+				new_id = (this.todos.slice(-1)[0].id) + 1;
+			}
+			else {
+				new_id = 1;
+			}
+
+			this.todos.push(
+				{
+					id: new_id, 
+					name: new_Todo,
+          completed: false,
+        }
+			);
+		},
+
+		removeTodo(id) {
+
+			// Emit event
+			this.$emit('remove-category', id, this.edit_todo);
+		},
+
+    editTodo(id) {
+      state.todos.map(todo => {
+        if (todo.id == id) {
+          this.edit_todo_id = todo.id;
+          this.edit_todo = todo.name;
+        }
       });
-
+  
     },
-    
+  
+    saveTodo(id) {
 
-    async addTodo() {
+      this.state.todos = this.state.todos.filter(todo => {
+				if (todo.id == id) {
+					todo.name = new_name;
+				}
+				return category;
+			});
 
+      // Clear edit category
+      this.edit_todo_id = 0;
     },
-
-    async editTodo() {
-
-      // TODO :-)
-      // Axios PUT request
-
-    },
-
-    async deleteTodo() {
-
-      // TODO :-)
-      // Axios DELETE request
-
-    }
-
   },
-
 })

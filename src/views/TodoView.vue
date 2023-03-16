@@ -15,21 +15,13 @@ export default {
     TodoList
   },
 
-  data() {
-		return {
-
-      // Example to get a .env variable
-			some_key: import.meta.env.VITE_SOME_KEY
-
-		}
-	},
-  
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed']),
   },
   
   methods: {
-   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo'])
+   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo"]),
+   
   },
   
   
@@ -65,21 +57,24 @@ export default {
     <div class="tab-content" id="todos">
 
       <div class="tab-pane fade show active" id="open-todos" role="tabpanel">
-        <TodoList :todos="todos_open" @toggle-todo-state="toggleTodo" />
+        <TodoList :todos="todos_open"
+        @toggle-todo-state="toggleTodo" 
+        @edit-todo="editTodo" 
+        @add-todo="addTodo"
+        @save-todo="saveTodo"/>
       </div>
 
       <div class="tab-pane fade" id="closed-todos" role="tabpanel">
-        <TodoList :todos="todos_completed" @toggle-todo-state="toggleTodo" />
+        <TodoList :todos="todos_completed" 
+        @toggle-todo-state="toggleTodo" 
+        @edit-todo="editTodo" 
+        @add-todo="addTodo"
+        @save-todo="saveTodo"/>
       </div>
 
     </div>
 
     <hr />
-
-	  <p>Test aus Umgebungsvariable via data: {{ some_key }}</p>
-
-   
-  
 
   </main>
 </template>

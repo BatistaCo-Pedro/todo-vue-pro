@@ -6,13 +6,12 @@ import { RouterLink, RouterView } from 'vue-router'
 
   <header>
     <nav>
-      <RouterLink to="/">Counter</RouterLink>
-      <RouterLink to="/counter-formular">Counter Formular</RouterLink>
+      <RouterLink to="/">HOME</RouterLink>
       <RouterLink to="/todos">TODO's</RouterLink>
     </nav>
   </header>
 
-   <div class="wrapper">
+   <div class="container">
     <RouterView />
   </div>
 

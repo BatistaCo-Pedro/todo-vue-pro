@@ -31,13 +31,8 @@ export default {
 <template>
   <main>
 
-    <h1>Counter</h1>
+    <h1>Welcome</h1>
 
-    <p>Der Counter ist derzeit {{ count }}</p>
-    <p>Das doppelte ist {{ doubleCount }}</p>
-
-    <button class="btn btn-primary me-2" @click="increment()">+1</button>
-    <button class="btn btn-outline-primary" @click="reset()">Reset</button>
 
   </main>
 </template>
