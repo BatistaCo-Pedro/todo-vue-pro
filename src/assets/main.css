@@ -8,11 +8,20 @@
   font-weight: normal;
 }
 
-a,
-.green {
+a, .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
+}
+
+.theme {
+  color: var(--color-text); 
+  background-color: var(--color-background-mute);
+}
+
+.theme-softer {
+  color: var(--color-text); 
+  background-color: var(--color-background-very-soft);
 }
 
 @media (hover: hover) {

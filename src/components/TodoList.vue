@@ -3,13 +3,6 @@
 export default {
   name: 'TodoList',
 
-  data() {
-    return {
-      show_add_button: true,
-      show_dash: false,
-    }
-  },
-
 	props: {
     todos: Array,
   },
@@ -24,21 +17,12 @@ export default {
       this.$emit("edit-todo", id)
     },
 
-    add_todo() {
-      this.$emit("add-todo")
-    },
-
     save_todo() {
       this.$emit("save-todo")
     },
 
-    showDash() {
-      this.show_dash = true; 
-      this.show_add_button= false; 
-
-      this.$nextTick(() => {
-        this.$refs.edit_todo_input.focus();
-      })
+    remove_todo(id) {
+      this.$emit("remove-todo", id)
     }
   },
 }
@@ -49,26 +33,24 @@ export default {
 
   <ul class="list-group">
 
-    <li class="list-group-item" v-for="todo in todos">
+    <li class="list-group-item theme" v-for="todo in todos" style="margin: 0.5rem 0 0 0;" >
 
-      <h3>{{todo.title}}</h3>
-      <p :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Erledigt!' : 'Offen'}}</p>
-      <button class="btn btn-sm btn-outline-primary" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? 'Offen markieren' : 'Erledigt markieren' }}</button>
-      <button class="btn btn-sm btn-outline-primary" @click="edit_todo(todo.id);">Edit Todo</button>
+      <h3>{{todo.name}}</h3>
+      <div class="inline-flex-container" style="width: 100%;">
+        <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
+        <p>{{todo.description}}</p>
+      </div>
+      <div class="inline-flex-container" style="width: 100%;">
+          <div style="width: 40%;">
+          <button class="btn btn-sm btn-outline-primary m-2" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? 'Open' : 'Complete' }}</button>
+          <button class="btn btn-sm btn-outline-primary m-2" @click="edit_todo(todo.id);">Edit Todo</button>
+        </div>  
+        <div class="align-right" style="width: 60%;">
+          <button class="btn btn-sm btn-outline-primary m-2" @click="remove_todo(todo.id);">Remove </button>
+        </div>
+      </div> 
     </li>
   </ul>
-  <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" @click="showDash()">Add Todo</button>
-
-  <div v-if="show_dash" class="container-flex">
-    <form>
-      <input type="text" class="margins" id="todoNameInput"
-      v-model="edit_category"
-      v-on:keyup.enter="save_todo(id)"
-      ref="edit_todo_input"
-      placeholder="Name">
-      <textarea id="todoDescriptionId" class="margins justify-right" placeholder="Description" cols="25"></textarea>
-    </form>
-  </div>
   
 </template>
 
@@ -81,13 +63,21 @@ export default {
   color: red;
 }
 
-.margins {
-  margin: 1rem 0 0 0;
-  padding: 0.5rem, 3rem;
+.inline-flex-container {
+  display: inline-flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 
-.container-flex {
-  display: flex;
-  flex-direction: column;
+.align-right {
+  display: inline-flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+  .align-right {
+    
+  }
 }
 </style>

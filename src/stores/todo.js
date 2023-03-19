@@ -5,17 +5,23 @@ export const useTodoStore = defineStore('todo', {
   state: () => ({ 
     return: {
       edit_todo_id: 0,
-			edit_todo: ''
+			edit_todo: '',
     },
+    show_add_button: true,
+    show_dash: false,
     todos: [
       {
         id: 1,
         name: "test",
+        description: "asssssssssssssd ad asdada dasdad adasd",
+        category: "",
         completed: false,
       }
     ],
     current_todo: Object
   }),
+
+  persist: true,
 
   getters: {
 
@@ -29,7 +35,6 @@ export const useTodoStore = defineStore('todo', {
 
     todos_open: (state) => {
       if (state.todos) {
-        console.log("if")
         return state.todos.filter(todo => {
           return todo.completed == false
         });
@@ -55,9 +60,9 @@ export const useTodoStore = defineStore('todo', {
       });
     },
 
-    addTodo(new_Todo) {
+    addTodo(new_Todo, new_description, new_category) {
 			let new_id;
-      console.log("adding new todo")
+      console.log(`new todo: ${new_Todo} --- ${new_description} --- ${new_category} --- `)
 
 			if (this.todos.length) {
 				new_id = (this.todos.slice(-1)[0].id) + 1;
@@ -66,19 +71,24 @@ export const useTodoStore = defineStore('todo', {
 				new_id = 1;
 			}
 
-			this.todos.push(
+      this.todos.push(
 				{
 					id: new_id, 
 					name: new_Todo,
+          description: new_description,
+          category: new_category,
           completed: false,
         }
 			);
+      this.show_add_button = true;
+      this.show_dash = false;
 		},
 
 		removeTodo(id) {
-
-			// Emit event
-			this.$emit('remove-category', id, this.edit_todo);
+      console.log("removing todo")
+      this.todos = this.todos.filter(todo => {
+        return todo.id != id;
+      });
 		},
 
     editTodo(id) {
@@ -92,15 +102,14 @@ export const useTodoStore = defineStore('todo', {
     },
   
     saveTodo(id) {
-
-      this.state.todos = this.state.todos.filter(todo => {
+      console.log("third step")
+      this.todos = this.todos.filter(todo => {
 				if (todo.id == id) {
 					todo.name = new_name;
 				}
-				return category;
+				return todo;
 			});
 
-      // Clear edit category
       this.edit_todo_id = 0;
     },
   },
