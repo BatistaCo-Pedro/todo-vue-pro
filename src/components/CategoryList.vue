@@ -36,7 +36,7 @@
 
 <script>
 export default {
-	name: 'TodoCategoryList',
+	name: 'CategoryList',
 
 	data() {
 		return {

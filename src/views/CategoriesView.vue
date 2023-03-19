@@ -1,3 +1,31 @@
+<script>
+import { mapState, mapWritableState, mapActions } from 'pinia'
+import { useCategoryStore } from '@/stores/categories'
+import CategoryList from '@/components/CategoryList.vue'
+
+export default {
+
+	components: {
+		CategoryList
+	},
+
+	data() {
+		return {
+			new_category: ''
+		}
+	},
+
+	methods: {
+		...mapActions(useCategoryStore, ['addCategory', 'removeCategory', "saveCategory"]),
+		
+	},
+
+	computed: {
+		...mapWritableState(useCategoryStore, ['categories']),
+	}
+}
+</script>
+
 <template>
 <div class="manage_category">
 	
@@ -26,55 +54,6 @@
 
 </div>
 </template>
-
-<script>
-// @ is an alias to /src
-import CategoryList from '@/components/CategoryList.vue'
-
-export default {
-	name: 'ManageCategory',
-	components: {
-		CategoryList
-	},
-
-	data() {
-		return {
-			new_category: ''
-		}
-	},
-
-	props: {
-		categories: {
-			type: Array,
-			required: true
-		}
-	},
-
-	methods: {
-
-		addCategory() {
-
-			// Emit event
-			this.$emit('add-category', this.new_category);
-			
-			// Reset new_category
-			this.new_category = '';
-
-		},
-
-		removeCategory(id) {
-			// Emit event
-			this.$emit('remove-category', id);
-		},
-
-		saveCategory(data) {
-			// Emit event
-			this.$emit('save-category', data);
-		}
-		
-	}
-}
-</script>
 
 <style scoped>
 .list-group-item {

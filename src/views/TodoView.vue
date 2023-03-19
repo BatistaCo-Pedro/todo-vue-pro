@@ -1,12 +1,8 @@
 <script>
 
-// Lade nötige Komponenten für Pinia
 import { mapState, mapWritableState, mapActions } from 'pinia'
-
-// Lade Store
 import { useTodoStore } from '@/stores/todo'
 
-// Lade Komponente TodoList
 import TodoList from '@/components/TodoList.vue'
 
 export default {
