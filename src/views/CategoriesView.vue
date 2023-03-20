@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapWritableState, mapActions } from 'pinia'
-import { useCategoryStore } from '@/stores/categories'
+import { useCategoryStore } from '@/stores/todo'
 import CategoryList from '@/components/CategoryList.vue'
 
 export default {

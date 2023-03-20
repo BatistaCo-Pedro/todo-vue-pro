@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useTodoStore = defineStore('todo', {
+export const useTodoStore = defineStore('todo',{
 
   state: () => ({ 
     return: {
@@ -44,11 +44,11 @@ export const useTodoStore = defineStore('todo', {
 
   actions: {
     
-    async fetchTodos() {
+    fetchTodos() {
         this.todos = this.todos;
     },
 
-    async toggleTodo(id) {
+    toggleTodo(id) {
 
       // Change in local data
       this.todos = this.todos.map(todo => {
@@ -112,5 +112,65 @@ export const useTodoStore = defineStore('todo', {
 
       this.edit_todo_id = 0;
     },
+  },
+})
+
+export const useCategoryStore = defineStore('category', {
+
+  state: () => ({ 
+    return: {},
+    categories: [
+      {
+        id: 1,
+        name: 'Schule'
+      },
+      {
+        id: 2,
+        name: 'Privat'
+      }
+    ]
+  }),
+
+  persist: true,
+
+  actions: {
+    
+    addCategory(new_category) {
+      let new_id;
+
+      if (this.categories.length) {
+        new_id = (this.categories.slice(-1)[0].id) + 1;
+      }
+      else {
+        new_id = 1;
+      }
+
+      this.categories.push(
+        {
+          id: new_id, 
+          name: new_category
+        }
+      );
+    },
+
+    saveCategory(data) {
+
+      this.categories = this.categories.filter(category => {
+        if (category.id == data.id) {
+          category.name = data.new_name;
+        }
+        return category;
+      });
+
+    },
+
+    removeCategory(id) {
+
+      this.categories = this.categories.filter(category => {
+        return category.id != id;
+      });
+
+    }
+
   },
 })

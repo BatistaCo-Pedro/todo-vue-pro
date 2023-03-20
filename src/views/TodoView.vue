@@ -1,8 +1,7 @@
 <script>
-
+import Multiselect from 'vue-multiselect'
 import { mapState, mapWritableState, mapActions } from 'pinia'
-import { useTodoStore } from '@/stores/todo'
-import { useCategoryStore } from "@/stores/category"
+import { useTodoStore, useCategoryStore } from '@/stores/todo'
 
 import TodoList from '@/components/TodoList.vue'
 
@@ -13,16 +12,18 @@ export default {
       new_todo: "",
       new_description: "",
       new_category: "",
+      category_value: "",
     }
   },
 
   components: {
-    TodoList
+    TodoList,
+    Multiselect
   },
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "show_add_button", "show_dash"]),
-		...mapWritableState(useCategoryStore, ['categories']),
+    ...mapWritableState(useCategoryStore, ['categories']),
 
     addTodoText: {
       get() {
@@ -143,6 +144,8 @@ export default {
         v-model="addTodoDescription"
         v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
       ></textarea>
+      <multiselect v-model="category_value" :options="categories" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Pick a value"></multiselect>
+      <!--<multiselect v-model="category_value" :options="categories" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Pick a value"></multiselect>-->
 
       <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
         @click="addTodo(new_todo, new_description, new_category)"
