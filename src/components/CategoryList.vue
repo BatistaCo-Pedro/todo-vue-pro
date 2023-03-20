@@ -21,11 +21,11 @@
 
 				<a 
 				class="btn btn-xs float-end" 
-				@click="removeCategory(id)"><i class="bi bi-trash"></i></a>
+				@click="removeCategory(id)"><i class="bi bi-trash3"></i></a>
 
 				<a 
 				class="btn btn-xs float-end" 
-				@click="editCategory(id)"><i class="bi bi-pencil"></i></a>
+				@click="editCategory(id)"><i class="bi bi-pencil-square"></i></a>
 
 			</div>
 
@@ -59,18 +59,12 @@ export default {
 	methods: {
 
 		editCategory(id) {
-
-			// Set edit category
 			this.edit_category_id = id;
 			this.edit_category = this.name;
 
-			// Set focus after next tick
-			// See https://vuejs.org/api/general.html#nexttick
-			// See https://vuejs.org/guide/essentials/template-refs.html
 			this.$nextTick(() => {
-          this.$refs.edit_category_input.focus();
-      })
-
+         		this.$refs.edit_category_input.focus();
+    		})
 		},
 		
 		saveCategory(id) {

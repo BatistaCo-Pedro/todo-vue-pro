@@ -2,6 +2,7 @@
 
 import { mapState, mapWritableState, mapActions } from 'pinia'
 import { useTodoStore } from '@/stores/todo'
+import { useCategoryStore } from "@/stores/category"
 
 import TodoList from '@/components/TodoList.vue'
 
@@ -21,6 +22,7 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "show_add_button", "show_dash"]),
+		...mapWritableState(useCategoryStore, ['categories']),
 
     addTodoText: {
       get() {
@@ -67,6 +69,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.edit_todo_input.focus();
       })
+    },
+
+    closeDash() {
+      this.show_dash = false; 
+      this.show_add_button = true; 
     }
   },
   
@@ -120,19 +127,24 @@ export default {
 
     </div>
     <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" @click="showDash()">Add Todo</button>
+    <div v-if="show_dash" style="margin: 0.5rem 0.25rem 0.05rem 0; display: flex; justify-content: flex-end;">
+      <h3><button class="button-no-style" @click="closeDash"><i class="bi bi-x-lg"></i></button></h3>
+    </div>
 
     <div v-if="show_dash" class="container-flex form-group">
-      <input type="text" class="margins form-control theme-softer" id="todoNameInput"
+      <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
         name="addTodoInput"
         v-model="addTodoText"
         v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
         ref="edit_todo_input"
         placeholder="Name">
-      <textarea id="todoDescriptionId" class="margins justify-right theme-softer" placeholder="Description" cols="25"
+
+      <textarea id="todoDescriptionId" class="margins justify-right form-control theme-softer" placeholder="Description" cols="25"
         v-model="addTodoDescription"
         v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
       ></textarea>
-      <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: white;"
+
+      <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
         @click="addTodo(new_todo, new_description, new_category)"
       >Add</button>
     </div>
@@ -163,5 +175,15 @@ li {
 .container-flex {
   display: flex;
   flex-direction: column;
+}
+
+.button-no-style {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 </style>

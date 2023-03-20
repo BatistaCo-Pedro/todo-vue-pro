@@ -38,16 +38,14 @@ export default {
       <h3>{{todo.name}}</h3>
       <div class="inline-flex-container" style="width: 100%;">
         <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
-        <p>{{todo.description}}</p>
+        <p>{{todo.description.length > 30 ? todo.description.substring(0, 30) + "..." : todo.description}}</p>
       </div>
       <div class="inline-flex-container" style="width: 100%;">
-          <div style="width: 40%;">
-          <button class="btn btn-sm btn-outline-primary m-2" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? 'Open' : 'Complete' }}</button>
-          <button class="btn btn-sm btn-outline-primary m-2" @click="edit_todo(todo.id);">Edit Todo</button>
+        <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? ' Open' : ' Complete' }}</button>
+        <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="edit_todo(todo.id);"><i class="bi bi-pen"></i> Edit Todo</button>
+        <div class="align-right">
+          <button class="btn btn-sm btn-outline-primary m-2 m-mob" style="" @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i> Remove</button>
         </div>  
-        <div class="align-right" style="width: 60%;">
-          <button class="btn btn-sm btn-outline-primary m-2" @click="remove_todo(todo.id);">Remove </button>
-        </div>
       </div> 
     </li>
   </ul>
@@ -66,18 +64,25 @@ export default {
 .inline-flex-container {
   display: inline-flex;
   justify-content: flex-start;
-  flex-wrap: wrap;
 }
 
 .align-right {
-  display: inline-flex;
+  width: 82%;
+  display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1224px) {
   .align-right {
-    
+    width: 33%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .m-mob {
+    margin: 0.2rem!important;
+    font-size: 0.75rem!important;
   }
 }
 </style>
