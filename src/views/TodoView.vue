@@ -1,5 +1,5 @@
 <script>
-import Multiselect from 'vue-multiselect'
+import VueMultiselect from 'vue-multiselect'
 import { mapState, mapWritableState, mapActions } from 'pinia'
 import { useTodoStore, useCategoryStore } from '@/stores/todo'
 
@@ -18,7 +18,7 @@ export default {
 
   components: {
     TodoList,
-    Multiselect
+    VueMultiselect
   },
 
   computed: {
@@ -144,7 +144,11 @@ export default {
         v-model="addTodoDescription"
         v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
       ></textarea>
-      <multiselect v-model="category_value" :options="categories" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Pick a value"></multiselect>
+      <VueMultiselect v-model="category_value" :options="categories" 
+      :searchable="true" 
+      :close-on-select="true" 
+      :show-labels="false" 
+      placeholder="Pick a value"></VueMultiselect>
       <!--<multiselect v-model="category_value" :options="categories" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Pick a value"></multiselect>-->
 
       <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
