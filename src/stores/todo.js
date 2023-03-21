@@ -140,6 +140,7 @@ export const useTodoStore = defineStore('todo',{
           description: todoData.description,
           category: todoData.category,
           completed: todoData.completed,
+          isFavorite: todoData.isFavorite,
         }
 			);
     }
