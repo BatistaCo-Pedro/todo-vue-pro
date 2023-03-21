@@ -12,7 +12,6 @@ export default {
       new_todo: "",
       new_description: "",
       new_category: "",
-      category_value: "",
     }
   },
 
@@ -23,7 +22,7 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "show_add_button", "show_dash"]),
-    ...mapWritableState(useCategoryStore, ['categories']),
+    ...mapWritableState(useCategoryStore, ['category_names']),
 
     addTodoText: {
       get() {
@@ -39,11 +38,7 @@ export default {
         return this.new_description
       },
       set(addTodoDescription) {
-        console.log(addTodoDescription)
         this.new_description = addTodoDescription
-        if(this.new_description === null) {
-          this.new_description = "no description given";
-        }
       }
     },
 
@@ -53,17 +48,14 @@ export default {
       },
       set(addTodoCategory) {
         this.new_category = addTodoCategory
-        if(this.new_category === null) {
-          this.new_category = "no description given";
-        }
       }
     },
   },
   
   methods: {
-   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo"]),
+   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo"]),
 
-   showDash() {
+    showDash() {
       this.show_dash = true; 
       this.show_add_button= false; 
 
@@ -75,9 +67,26 @@ export default {
     closeDash() {
       this.show_dash = false; 
       this.show_add_button = true; 
+    },
+
+    submitTodo(new_Todo, new_description, new_category) {
+      this.addTodo(new_Todo, new_description, new_category);
+      //reset values
+      this.new_todo = "";
+      this.new_description = "";
+      this.new_category = "";
     }
   },
   
+  watch: {
+    new_category(value) {
+      if(value === null || value == "" || value == undefined) {
+        this.new_category = "No Category Given";
+        return;
+      }
+      this.new_category = value;
+    }
+  },
   
   mounted() {
 		//something
@@ -97,11 +106,11 @@ export default {
     <ul class="nav nav-tabs" id="myTab" role="tablist">
 
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="open-todos-tab" data-bs-toggle="tab" data-bs-target="#open-todos" type="button" role="tab">Open ({{ todos_open != undefined ? todos_open.length : 0 }})</button>
+        <button class="nav-link active" id="open-todos-tab" data-bs-toggle="tab" data-bs-target="#open-todos" type="button" role="tab" @click="show_add_button = true">Open ({{ todos_open != undefined ? todos_open.length : 0 }})</button>
       </li>
 
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="closed-todos-tab" data-bs-toggle="tab" data-bs-target="#closed-todos" type="button" role="tab">Completed ({{ todos_completed != undefined ? todos_completed.length : 0 }})</button>
+        <button class="nav-link" id="closed-todos-tab" data-bs-toggle="tab" data-bs-target="#closed-todos" type="button" role="tab" @click="show_add_button = false">Completed ({{ todos_completed != undefined ? todos_completed.length : 0 }})</button>
       </li>
 
     </ul>
@@ -115,7 +124,8 @@ export default {
         @toggle-todo-state="toggleTodo" 
         @edit-todo="editTodo" 
         @save-todo="saveTodo"
-        @remove-todo="removeTodo"/>
+        @remove-todo="removeTodo"
+        @clone-todo="cloneTodo"/>
       </div>
 
       <div class="tab-pane fade" id="closed-todos" role="tabpanel">
@@ -127,33 +137,37 @@ export default {
       </div>
 
     </div>
+
     <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" @click="showDash()">Add Todo</button>
     <div v-if="show_dash" style="margin: 0.5rem 0.25rem 0.05rem 0; display: flex; justify-content: flex-end;">
       <h3><button class="button-no-style" @click="closeDash"><i class="bi bi-x-lg"></i></button></h3>
     </div>
 
     <div v-if="show_dash" class="container-flex form-group">
-      <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
-        name="addTodoInput"
-        v-model="addTodoText"
-        v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
-        ref="edit_todo_input"
-        placeholder="Name">
+      <form class="needs-validation" @submit="submitTodo(new_todo, new_description, new_category)">
+        <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
+          name="addTodoInput"
+          v-model="addTodoText"
+          ref="edit_todo_input"
+          placeholder="Name"
+          required>
 
-      <textarea id="todoDescriptionId" class="margins justify-right form-control theme-softer" placeholder="Description" cols="25"
-        v-model="addTodoDescription"
-        v-on:keyup.enter="addTodo(new_todo, new_description, new_category)"
-      ></textarea>
-      <VueMultiselect v-model="category_value" :options="categories" 
-      :searchable="true" 
-      :close-on-select="true" 
-      :show-labels="false" 
-      placeholder="Pick a value"></VueMultiselect>
-      <!--<multiselect v-model="category_value" :options="categories" :searchable="false" :close-on-select="true" :show-labels="false" placeholder="Pick a value"></multiselect>-->
+        <textarea id="todoDescriptionId" class="margins justify-right form-control theme-softer" placeholder="Description" cols="25"
+          v-model="addTodoDescription"
+          required
+        ></textarea>
+        <br>
+        <VueMultiselect v-model="addTodoCategory" :options="category_names" 
+        :searchable="true" 
+        :close-on-select="true" 
+        :show-labels="false" 
+        placeholder="Pick a value"></VueMultiselect>
 
-      <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
-        @click="addTodo(new_todo, new_description, new_category)"
-      >Add</button>
+        <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
+          type="submit"
+        >
+        Add</button>
+      </form>
     </div>
     <hr />
 
@@ -182,15 +196,5 @@ li {
 .container-flex {
   display: flex;
   flex-direction: column;
-}
-
-.button-no-style {
-  background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
 }
 </style>

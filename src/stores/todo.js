@@ -13,8 +13,8 @@ export const useTodoStore = defineStore('todo',{
       {
         id: 1,
         name: "test",
-        description: "asssssssssssssd ad asdada dasdad adasd",
-        category: "",
+        description: "This is a simple test!",
+        category: "No Category",
         completed: false,
       }
     ],
@@ -50,26 +50,32 @@ export const useTodoStore = defineStore('todo',{
 
     toggleTodo(id) {
 
-      // Change in local data
+      //Change to completed or open
       this.todos = this.todos.map(todo => {
         if (todo.id == id) {
           todo.completed = !todo.completed;
           this.current_todo = todo;
         }
         return todo;
-      });
+      })
     },
 
     addTodo(new_Todo, new_description, new_category) {
 			let new_id;
-      console.log(`new todo: ${new_Todo} --- ${new_description} --- ${new_category} --- `)
+      console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category}!`)
 
+      //assign new id
 			if (this.todos.length) {
 				new_id = (this.todos.slice(-1)[0].id) + 1;
 			}
 			else {
 				new_id = 1;
 			}
+
+      //Category Validation as it's not required to give a category
+      if(new_category == "") {
+        new_category = "No Category"
+      }
 
       this.todos.push(
 				{
@@ -80,6 +86,8 @@ export const useTodoStore = defineStore('todo',{
           completed: false,
         }
 			);
+
+      //hide dahsboard and show "add todo" button again
       this.show_add_button = true;
       this.show_dash = false;
 		},
@@ -112,6 +120,21 @@ export const useTodoStore = defineStore('todo',{
 
       this.edit_todo_id = 0;
     },
+
+    cloneTodo(todoData) {
+      console.log("cloning todo: " + todoData.id)
+      let newCloneId = (this.todos.slice(-1)[0].id) + 1;
+      
+      this.todos.push(
+				{
+					id: newCloneId, 
+					name: todoData.name,
+          description: todoData.description,
+          category: todoData.category,
+          completed: todoData.completed,
+        }
+			);
+    }
   },
 })
 
@@ -133,11 +156,25 @@ export const useCategoryStore = defineStore('category', {
 
   persist: true,
 
+  getters: {
+    //get the names only -> shown in the multiselect when adding a new todo
+    category_names: (state) => {
+      let categoryNames = []
+      if (state.categories) {
+        state.categories.map(category => {
+          categoryNames.push(category.name)
+        })
+      }
+      return categoryNames;
+    }
+  },
+
   actions: {
     
     addCategory(new_category) {
       let new_id;
 
+      //assigning new id
       if (this.categories.length) {
         new_id = (this.categories.slice(-1)[0].id) + 1;
       }
@@ -154,7 +191,6 @@ export const useCategoryStore = defineStore('category', {
     },
 
     saveCategory(data) {
-
       this.categories = this.categories.filter(category => {
         if (category.id == data.id) {
           category.name = data.new_name;
@@ -165,12 +201,9 @@ export const useCategoryStore = defineStore('category', {
     },
 
     removeCategory(id) {
-
       this.categories = this.categories.filter(category => {
         return category.id != id;
       });
-
     }
-
   },
 })

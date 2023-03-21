@@ -23,7 +23,12 @@ export default {
 
     remove_todo(id) {
       this.$emit("remove-todo", id)
-    }
+    },
+
+    clone_todo(todoData) {
+      console.log("clicked clone " + todoData.id)
+      this.$emit("clone-todo", todoData)
+    },
   },
 }
 </script>
@@ -34,11 +39,19 @@ export default {
   <ul class="list-group">
 
     <li class="list-group-item theme" v-for="todo in todos" style="margin: 0.5rem 0 0 0;" >
-
-      <h3>{{todo.name}}</h3>
+      <div class="inline-flex-container-space">
+        <h3>{{todo.name}}</h3>
+        <div class="inline-flex-container">
+          <button @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
+          <h5>adad</h5>
+        </div>
+      </div>
       <div class="inline-flex-container" style="width: 100%;">
         <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
         <p>{{todo.description.length > 30 ? todo.description.substring(0, 30) + "..." : todo.description}}</p>
+      </div>
+      <div>
+        <p>{{ todo.category }}</p>
       </div>
       <div class="inline-flex-container" style="width: 100%;">
         <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? ' Open' : ' Complete' }}</button>
@@ -64,6 +77,12 @@ export default {
 .inline-flex-container {
   display: inline-flex;
   justify-content: flex-start;
+}
+
+.inline-flex-container-space {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-between;
 }
 
 .align-right {

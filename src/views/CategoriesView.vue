@@ -17,7 +17,10 @@ export default {
 
 	methods: {
 		...mapActions(useCategoryStore, ['addCategory', 'removeCategory', "saveCategory"]),
-		
+		submitCategory(new_category_name) {
+			this.addCategory(new_category_name)
+			this.new_category = ""
+		}
 	},
 
 	computed: {
@@ -46,9 +49,9 @@ export default {
 		name="add_category"
 		class="form-control add-new-category"
 		v-model="new_category" 
-		v-on:keyup.enter="addCategory" 
+		v-on:keyup.enter="submitCategory(new_category)" 
 		autocomplete="off"
-		placeholder="Neue Kategorie hinzufügen" />
+		placeholder="Neue Kategorie hinzufügen"/>
 	</div>
 	
 
