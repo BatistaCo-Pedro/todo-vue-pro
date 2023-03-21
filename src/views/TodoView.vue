@@ -21,7 +21,7 @@ export default {
   },
 
   computed: {
-    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "show_add_button", "show_dash"]),
+    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "show_add_button", "show_dash"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
 
     addTodoText: {
@@ -112,6 +112,10 @@ export default {
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="closed-todos-tab" data-bs-toggle="tab" data-bs-target="#closed-todos" type="button" role="tab" @click="show_add_button = false">Completed ({{ todos_completed != undefined ? todos_completed.length : 0 }})</button>
       </li>
+      
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="favorite-todos-tab" data-bs-toggle="tab" data-bs-target="#favorite-todos" type="button" role="tab" @click="show_add_button = false">Favorites ({{ favorite_todos != undefined ? favorite_todos.length : 0 }})</button>
+      </li>
 
     </ul>
 
@@ -130,6 +134,14 @@ export default {
 
       <div class="tab-pane fade" id="closed-todos" role="tabpanel">
         <TodoList :todos="todos_completed" 
+        @toggle-todo-state="toggleTodo" 
+        @edit-todo="editTodo" 
+        @save-todo="saveTodo"
+        @remove-todo="removeTodo"/>
+      </div>
+
+      <div class="tab-pane fade" id="favorite-todos" role="tabpanel">
+        <TodoList :todos="favorite_todos" 
         @toggle-todo-state="toggleTodo" 
         @edit-todo="editTodo" 
         @save-todo="saveTodo"

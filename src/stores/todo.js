@@ -16,6 +16,7 @@ export const useTodoStore = defineStore('todo',{
         description: "This is a simple test!",
         category: "No Category",
         completed: false,
+        isFavorite: false,
       }
     ],
     current_todo: Object
@@ -24,6 +25,14 @@ export const useTodoStore = defineStore('todo',{
   persist: true,
 
   getters: {
+
+    favorite_todos: (state) => {
+      if(state.todos) {
+        return state.todos.filter(todo => {
+          return todo.isFavorite == true
+        })
+      }
+    },
 
     todos_completed: (state) => {
       if (state.todos) {
@@ -77,15 +86,14 @@ export const useTodoStore = defineStore('todo',{
         new_category = "No Category"
       }
 
-      this.todos.push(
-				{
-					id: new_id, 
-					name: new_Todo,
-          description: new_description,
-          category: new_category,
-          completed: false,
-        }
-			);
+      this.todos.push({
+        id: new_id, 
+        name: new_Todo,
+        description: new_description,
+        category: new_category,
+        completed: false,
+        isFavorite: false,
+      });
 
       //hide dahsboard and show "add todo" button again
       this.show_add_button = true;

@@ -29,6 +29,15 @@ export default {
       console.log("clicked clone " + todoData.id)
       this.$emit("clone-todo", todoData)
     },
+
+    addToFavorites(todoData) {
+      if(todoData.isFavorite == false)
+        todoData.isFavorite = true
+    },
+    removeFromFavorites(todoData) {
+      if(todoData.isFavorite == true)
+        todoData.isFavorite = false
+    }
   },
 }
 </script>
@@ -43,7 +52,8 @@ export default {
         <h3>{{todo.name}}</h3>
         <div class="inline-flex-container">
           <button @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
-          <h5>adad</h5>
+          <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5></button>
+          <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5></button>
         </div>
       </div>
       <div class="inline-flex-container" style="width: 100%;">
