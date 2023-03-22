@@ -5,8 +5,10 @@ export const useTodoStore = defineStore('todo',{
   state: () => ({ 
     show_add_button: true,
     show_dash: false,
+    
     //to divide between search and non search todos
     is_searching: false,
+
     search_bar_input: "",
     todos: [
       {

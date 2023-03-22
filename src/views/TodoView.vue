@@ -84,9 +84,9 @@ export default {
 
     <div style="width: 100%;">
       <input style="width: 100%;" class="searchbar" type="text" v-model="search_bar_input" placeholder="Search Todos" />
-      <!--<div class="item error" v-if="search_bar_input && searchTodos(todos) == false">
+      <div class="item error" v-if="search_bar_input && todos_open.length < 1">
         <p>No results found!</p>
-      </div>-->
+      </div>
     </div>
 
     <!-- Tab content -->

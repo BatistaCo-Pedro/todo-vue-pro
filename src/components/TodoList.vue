@@ -58,7 +58,7 @@ export default {
       console.log(this.$refs)
 
       this.$nextTick(() => {
-        this.$refs.edit_description_input.focus();
+        this.$refs.edit_description_input.focus()
       })
     },
 
@@ -66,12 +66,10 @@ export default {
       todo.description = this.edited_description;
       this.edit_todo_id = -1;
 
-
-    }
+    },
   },
 }
 </script>
-
 
 <template>
 
@@ -100,14 +98,14 @@ export default {
         </button>
       </div>
 
-      <div v-if="todo.open" class="inline-flex-container">
+      <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
 
-        <input v-if="edit_todo_id==todo.id" 
+        <input v-if="edit_todo_id == todo.id" 
 					v-model="edited_description"
 					v-on:keyup.enter="save_description(todo)"
-          v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
 					ref="edit_description_input"
 					class="form-control"
+          style="width: 100%;"
 					>
         <p v-else>{{ todo.description }}</p>
 
