@@ -84,7 +84,7 @@ export default {
         </button>
       </div>
       <div>
-        <p>{{ todo.category }}</p>
+        <h6>{{ todo.category }}</h6>
       </div>
       <div class="inline-flex-container" style="width: 100%;">
         <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? ' Open' : ' Complete' }}</button>
