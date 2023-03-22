@@ -3,10 +3,6 @@ import { defineStore } from 'pinia'
 export const useTodoStore = defineStore('todo',{
 
   state: () => ({ 
-    return: {
-      edit_todo_id: 0,
-			edit_todo: '',
-    },
     show_add_button: true,
     show_dash: false,
     //to divide between search and non search todos
@@ -36,8 +32,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.isFavorite && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
+          return todo.isFavorite && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
         })
       }
       return state.todos.filter(todo => {
@@ -50,8 +46,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.completed == true && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
+          return todo.completed == true && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
         })
       }
       return state.todos.filter(todo => {
@@ -64,8 +60,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.completed == false && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
+          return todo.completed == false && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
         })
       }
       return state.todos.filter(todo => {
@@ -127,27 +123,17 @@ export const useTodoStore = defineStore('todo',{
         return todo.id != id;
       });
 		},
-
-    editTodo(id) {
-      state.todos.map(todo => {
-        if (todo.id == id) {
-          this.edit_todo_id = todo.id;
-          this.edit_todo = todo.name;
-        }
-      });
   
-    },
-  
-    saveTodo(id) {
-      console.log("third step")
+    saveTodo(newTodoData) {
       this.todos = this.todos.filter(todo => {
-				if (todo.id == id) {
-					todo.name = new_name;
+				if (todo.id == newTodoData.id) {
+					todo.name = newTodoData.new_name
+          todo.description = newTodoData.new_description
+          todo.category = newTodoData.new_category
+          todo.priority = newTodoData.new_prority
 				}
 				return todo;
 			});
-
-      this.edit_todo_id = 0;
     },
 
     cloneTodo(todoData) {

@@ -51,8 +51,9 @@ export default {
       todo.open = !todo.open;
     },
 
-    edit_description(id) {
-      this.edit_todo_id = id;
+    edit_description(todo) {
+      this.edit_todo_id = todo.id;
+      this.edited_description = todo.description;
 
       console.log(this.$refs)
 
@@ -60,6 +61,13 @@ export default {
         this.$refs.edit_description_input.focus();
       })
     },
+
+    save_description(todo) {
+      todo.description = this.edited_description;
+      this.edit_todo_id = -1;
+
+      
+    }
   },
 }
 </script>
@@ -96,13 +104,13 @@ export default {
 
         <input v-if="edit_todo_id==todo.id" 
 					v-model="edited_description"
-					v-on:keyup.enter="saveDescription(id)"
+					v-on:keyup.enter="save_description(todo)"
 					ref="edit_description_input"
 					class="form-control"
 					>
         <p v-else>{{ todo.description }}</p>
 
-        <button class="button-no-style" style="display: flex;" @click="edit_description(todo.id)">
+        <button class="button-no-style" style="display: flex;" @click="edit_description(todo)">
           <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
         <button class="button-no-style" style="display: flex;" @click="showDescription(todo)">
