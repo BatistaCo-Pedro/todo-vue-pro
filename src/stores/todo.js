@@ -36,7 +36,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-            return todo.isFavorite && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+          return todo.isFavorite && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
         })
       }
       return state.todos.filter(todo => {
@@ -49,7 +50,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-            return todo.completed && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+          return todo.completed == true && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
         })
       }
       return state.todos.filter(todo => {
@@ -62,7 +64,8 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-            return todo.completed == false && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+          return todo.completed == false && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase());
         })
       }
       return state.todos.filter(todo => {
@@ -72,13 +75,6 @@ export const useTodoStore = defineStore('todo',{
   },
 
   actions: {
-    
-    searchTodos() {
-      this.is_searching = true
-      return this.todos.filter(todo => {
-          return todo.name.toLowerCase().includes(this.search_bar_input.toLowerCase())
-      })
-    },
 
     toggleTodo(id) {
 

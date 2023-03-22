@@ -6,6 +6,8 @@ export default {
   data() {
     return {
       descriptionOpen: false,
+      edited_description: "",
+      edit_todo_id: -1,
     }
   },
 
@@ -47,7 +49,17 @@ export default {
 
     showDescription(todo) {
       todo.open = !todo.open;
-    }
+    },
+
+    edit_description(id) {
+      this.edit_todo_id = id;
+
+      console.log(this.$refs)
+
+      this.$nextTick(() => {
+        this.$refs.edit_description_input.focus();
+      })
+    },
   },
 }
 </script>
@@ -65,11 +77,13 @@ export default {
           <div v-if="todo.priority == 'Medium'" class="priorities"><h5 style="color: darkgoldenrod;"><i class="bi bi-3-circle-fill"></i></h5></div>
           <div v-if="todo.priority == 'High'" class="priorities"><h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5></div>
           <div v-if="todo.priority == 'Highest'" class="priorities"><h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5></div>
+
           <button @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
           <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5></button>
           <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5></button>
         </div>
       </div>
+
       <div class="inline-flex-container" style="width: 100%;">
         <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
         <p v-if="!todo.open" >{{todo.description.length > 25 ? todo.description.substring(0, 25) + "..." : todo.description}}</p>
@@ -77,12 +91,25 @@ export default {
           <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
       </div>
+
       <div v-if="todo.open" class="inline-flex-container">
-        <p>{{ todo.description }}</p>
+
+        <input v-if="edit_todo_id==todo.id" 
+					v-model="edited_description"
+					v-on:keyup.enter="saveDescription(id)"
+					ref="edit_description_input"
+					class="form-control"
+					>
+        <p v-else>{{ todo.description }}</p>
+
+        <button class="button-no-style" style="display: flex;" @click="edit_description(todo.id)">
+          <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
+        </button>
         <button class="button-no-style" style="display: flex;" @click="showDescription(todo)">
           <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
       </div>
+
       <div>
         <h6>{{ todo.category }}</h6>
       </div>

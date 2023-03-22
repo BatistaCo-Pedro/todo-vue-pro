@@ -1,68 +1,29 @@
 <script>
-import VueMultiselect from 'vue-multiselect'
-import { mapState, mapWritableState, mapActions } from 'pinia'
+
+import { mapWritableState, mapActions } from 'pinia'
 import { useTodoStore, useCategoryStore } from '@/stores/todo'
 
 import TodoList from '@/components/TodoList.vue'
+import AddTodoDashboard from '../components/AddTodoDashboard.vue'
 
 export default {
 
-  data() {
-    return {
-      new_todo: "",
-      new_description: "",
-      new_category: "",
-      new_priority: "Low",
-    }
-  },
-
   components: {
     TodoList,
-    VueMultiselect
+    AddTodoDashboard
   },
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "show_add_button", "show_dash", "is_searching", "search_bar_input"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
-
-    addTodoText: {
-      get() {
-        return this.new_todo
-      },
-      set(addTodoText) {
-        this.new_todo = addTodoText
-      }
-    },
-
-    addTodoDescription: {
-      get() {
-        return this.new_description
-      },
-      set(addTodoDescription) {
-        this.new_description = addTodoDescription
-      }
-    },
-
-    addTodoCategory: {
-      get() {
-        return this.new_category
-      },
-      set(addTodoCategory) {
-        this.new_category = addTodoCategory
-      }
-    },
   },
   
   methods: {
-   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo", "searchTodos"]),
+   ...mapActions(useTodoStore, ['toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo"]),
 
     showDash() {
       this.show_dash = true; 
-      this.show_add_button= false; 
-
-      this.$nextTick(() => {
-        this.$refs.edit_todo_input.focus();
-      })
+      this.show_add_button= false;
     },
 
     closeDash() {
@@ -92,6 +53,7 @@ export default {
     //make sure to show all todos when not searching again
     search_bar_input() {
       if(this.search_bar_input == "") { this.is_searching = false }
+      else { this.is_searching = true }
     },
   },
 }
@@ -122,9 +84,9 @@ export default {
 
     <div style="width: 100%;">
       <input style="width: 100%;" class="searchbar" type="text" v-model="search_bar_input" placeholder="Search Todos" />
-      <div class="item error" v-if="search_bar_input&&!searchTodos().length">
+      <!--<div class="item error" v-if="search_bar_input && searchTodos(todos) == false">
         <p>No results found!</p>
-      </div>
+      </div>-->
     </div>
 
     <!-- Tab content -->
@@ -162,56 +124,8 @@ export default {
       <h3><button class="button-no-style" @click="closeDash"><i class="bi bi-x-lg"></i></button></h3>
     </div>
 
-    <div v-if="show_dash" class="container-flex form-group">
-      <form class="needs-validation" @submit="submitTodo(new_todo, new_description, new_category, new_priority)">
-        <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
-          name="addTodoInput"
-          v-model="addTodoText"
-          ref="edit_todo_input"
-          placeholder="Name"
-          required>
+    <AddTodoDashboard @submit-todo="submitTodo"></AddTodoDashboard>
 
-        <textarea id="todoDescriptionId" class="margins justify-right form-control theme-softer" placeholder="Description" cols="25"
-          v-model="addTodoDescription"
-          required
-        ></textarea>
-        <br>
-
-        <div>Priority: {{ new_priority }}</div>
-        <div style="display: inline-flex; width: 30%; justify-content: space-between;">
-          <div>
-            <input required type="radio" id="priorityLow" value="Low" v-model="new_priority" style="margin: 0 0.2rem;"/>
-            <label for="priorityLow">Low</label>
-          </div>
-
-          <div>
-            <input required type="radio" id="priorityMedium" value="Medium" v-model="new_priority" style="margin: 0 0.2rem;"/>
-            <label for="priorityMedium">Medium</label>
-          </div>
-
-          <div>
-            <input required type="radio" id="priorityHigh" value="High" v-model="new_priority" style="margin: 0 0.2rem;"/>
-            <label for="priorityHigh">High</label>
-          </div>
-
-          <div>
-            <input required type="radio" id="priorityHighest" value="Highest" v-model="new_priority" style="margin: 0 0.2rem;"/>
-            <label for="priorityHighest">Highest</label>
-          </div>
-        </div>
-
-        <VueMultiselect v-model="addTodoCategory" :options="category_names" 
-        :searchable="true" 
-        :close-on-select="true" 
-        :show-labels="false" 
-        placeholder="Pick a value"></VueMultiselect>
-
-        <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
-          type="submit"
-        >
-        Add</button>
-      </form>
-    </div>
     <hr />
 
   </main>
