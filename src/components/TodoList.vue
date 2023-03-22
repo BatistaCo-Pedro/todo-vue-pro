@@ -3,6 +3,12 @@
 export default {
   name: 'TodoList',
 
+  data() {
+    return {
+      descriptionOpen: false,
+    }
+  },
+
 	props: {
     todos: Array,
   },
@@ -37,6 +43,10 @@ export default {
     removeFromFavorites(todoData) {
       if(todoData.isFavorite == true)
         todoData.isFavorite = false
+    },
+
+    openDescription() {
+      this.descriptionOpen = true
     }
   },
 }
@@ -51,6 +61,10 @@ export default {
       <div class="inline-flex-container-space">
         <h3>{{todo.name}}</h3>
         <div class="inline-flex-container">
+          <div v-if="todo.priority == 'Low'" class="priorities"><h5 style="color: green;"><i class="bi bi-4-circle-fill"></i></h5></div>
+          <div v-if="todo.priority == 'Medium'" class="priorities"><h5 style="color: darkgoldenrod;"><i class="bi bi-3-circle-fill"></i></h5></div>
+          <div v-if="todo.priority == 'High'" class="priorities"><h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5></div>
+          <div v-if="todo.priority == 'Highest'" class="priorities"><h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5></div>
           <button @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
           <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5></button>
           <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5></button>
@@ -58,7 +72,16 @@ export default {
       </div>
       <div class="inline-flex-container" style="width: 100%;">
         <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
-        <p>{{todo.description.length > 30 ? todo.description.substring(0, 30) + "..." : todo.description}}</p>
+        <p v-if="!descriptionOpen" >{{todo.description.length > 25 ? todo.description.substring(0, 25) + "..." : todo.description}}</p>
+        <button v-if="!descriptionOpen" class="button-no-style" style="display: flex;" @click="openDescription()">
+          <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
+        </button>
+        <button v-if="descriptionOpen" class="button-no-style" style="display: flex;" @click="openDescription()">
+          <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
+        </button>
+      </div>
+      <div v-if="descriptionOpen">
+        <p>{{ todo.description }}</p>
       </div>
       <div>
         <p>{{ todo.category }}</p>
@@ -78,6 +101,10 @@ export default {
 <style scoped>
 .done {
   color: green;
+}
+
+.priorities {
+  margin: 0.3rem 1rem 0 0
 }
 
 .open {
@@ -112,6 +139,10 @@ export default {
   .m-mob {
     margin: 0.2rem!important;
     font-size: 0.75rem!important;
+  }
+
+  .priorities {
+    margin: 0.125rem 1rem 0 0!important
   }
 }
 </style>

@@ -12,6 +12,7 @@ export default {
       new_todo: "",
       new_description: "",
       new_category: "",
+      new_priority: "Low",
     }
   },
 
@@ -21,7 +22,7 @@ export default {
   },
 
   computed: {
-    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "show_add_button", "show_dash"]),
+    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "show_add_button", "show_dash", "is_searching", "search_bar_input"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
 
     addTodoText: {
@@ -53,7 +54,7 @@ export default {
   },
   
   methods: {
-   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo"]),
+   ...mapActions(useTodoStore, ['fetchTodos', 'toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo", "searchTodos"]),
 
     showDash() {
       this.show_dash = true; 
@@ -69,13 +70,14 @@ export default {
       this.show_add_button = true; 
     },
 
-    submitTodo(new_Todo, new_description, new_category) {
-      this.addTodo(new_Todo, new_description, new_category);
+    submitTodo(new_Todo, new_description, new_category, new_priority) {
+      this.addTodo(new_Todo, new_description, new_category, new_priority);
       //reset values
       this.new_todo = "";
       this.new_description = "";
       this.new_category = "";
-    }
+      this.new_priority = "";
+    },
   },
   
   watch: {
@@ -85,14 +87,13 @@ export default {
         return;
       }
       this.new_category = value;
-    }
-  },
-  
-  mounted() {
-		//something
-	}
-  
+    },
 
+    //make sure to show all todos when not searching again
+    search_bar_input() {
+      if(this.search_bar_input == "") { this.is_searching = false }
+    },
+  },
 }
 </script>
 
@@ -119,6 +120,12 @@ export default {
 
     </ul>
 
+    <div style="width: 100%;">
+      <input style="width: 100%;" class="searchbar" type="text" v-model="search_bar_input" placeholder="Search Todos" />
+      <div class="item error" v-if="search_bar_input&&!searchTodos().length">
+        <p>No results found!</p>
+      </div>
+    </div>
 
     <!-- Tab content -->
     <div class="tab-content" id="todos">
@@ -156,7 +163,7 @@ export default {
     </div>
 
     <div v-if="show_dash" class="container-flex form-group">
-      <form class="needs-validation" @submit="submitTodo(new_todo, new_description, new_category)">
+      <form class="needs-validation" @submit="submitTodo(new_todo, new_description, new_category, new_priority)">
         <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
           name="addTodoInput"
           v-model="addTodoText"
@@ -169,6 +176,30 @@ export default {
           required
         ></textarea>
         <br>
+
+        <div>Priority: {{ new_priority }}</div>
+        <div style="display: inline-flex; width: 30%; justify-content: space-between;">
+          <div>
+            <input required type="radio" id="priorityLow" value="Low" v-model="new_priority" style="margin: 0 0.2rem;"/>
+            <label for="priorityLow">Low</label>
+          </div>
+
+          <div>
+            <input required type="radio" id="priorityMedium" value="Medium" v-model="new_priority" style="margin: 0 0.2rem;"/>
+            <label for="priorityMedium">Medium</label>
+          </div>
+
+          <div>
+            <input required type="radio" id="priorityHigh" value="High" v-model="new_priority" style="margin: 0 0.2rem;"/>
+            <label for="priorityHigh">High</label>
+          </div>
+
+          <div>
+            <input required type="radio" id="priorityHighest" value="Highest" v-model="new_priority" style="margin: 0 0.2rem;"/>
+            <label for="priorityHighest">Highest</label>
+          </div>
+        </div>
+
         <VueMultiselect v-model="addTodoCategory" :options="category_names" 
         :searchable="true" 
         :close-on-select="true" 
@@ -187,6 +218,8 @@ export default {
 </template>
 
 <style scoped>
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 li {
   list-style-type: none;
@@ -208,5 +241,22 @@ li {
 .container-flex {
   display: flex;
   flex-direction: column;
+}
+
+.searchbar {
+  display: block;
+  width: 350px;
+  margin: 20px auto;
+  padding: 10px 45px;
+  background: white no-repeat 15px center;
+  background-size: 15px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.error {
+  background-color: tomato;
 }
 </style>

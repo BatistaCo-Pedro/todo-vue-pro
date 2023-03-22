@@ -9,6 +9,9 @@ export const useTodoStore = defineStore('todo',{
     },
     show_add_button: true,
     show_dash: false,
+    //to divide between search and non search todos
+    is_searching: false,
+    search_bar_input: "",
     todos: [
       {
         id: 1,
@@ -17,6 +20,8 @@ export const useTodoStore = defineStore('todo',{
         category: "No Category",
         completed: false,
         isFavorite: false,
+        priority: "Low",
+        open: false,
       }
     ],
     current_todo: Object
@@ -27,34 +32,52 @@ export const useTodoStore = defineStore('todo',{
   getters: {
 
     favorite_todos: (state) => {
-      if(state.todos) {
+      if (!state.todos) return
+      //filter todos on search
+      if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.isFavorite == true
+            return todo.isFavorite && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
         })
       }
+      return state.todos.filter(todo => {
+        return todo.isFavorite
+      })
     },
 
     todos_completed: (state) => {
-      if (state.todos) {
+      if (!state.todos) return
+      //filter todos on search
+      if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.completed == true
-      });
+            return todo.completed && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+        })
       }
+      return state.todos.filter(todo => {
+        return todo.completed == true
+      });  
     },
 
     todos_open: (state) => {
-      if (state.todos) {
+      if (!state.todos) return
+      //filter todos on search
+      if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.completed == false
-        });
+            return todo.completed == false && todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+        })
       }
-    }
+      return state.todos.filter(todo => {
+        return todo.completed == false
+      });
+    },
   },
 
   actions: {
     
-    fetchTodos() {
-        this.todos = this.todos;
+    searchTodos() {
+      this.is_searching = true
+      return this.todos.filter(todo => {
+          return todo.name.toLowerCase().includes(this.search_bar_input.toLowerCase())
+      })
     },
 
     toggleTodo(id) {
@@ -69,7 +92,7 @@ export const useTodoStore = defineStore('todo',{
       })
     },
 
-    addTodo(new_Todo, new_description, new_category) {
+    addTodo(new_Todo, new_description, new_category, new_prority) {
 			let new_id;
       console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category}!`)
 
@@ -93,6 +116,8 @@ export const useTodoStore = defineStore('todo',{
         category: new_category,
         completed: false,
         isFavorite: false,
+        priority: new_prority,
+        open: false
       });
 
       //hide dahsboard and show "add todo" button again
@@ -141,6 +166,7 @@ export const useTodoStore = defineStore('todo',{
           category: todoData.category,
           completed: todoData.completed,
           isFavorite: todoData.isFavorite,
+          priority: todoData.priority
         }
 			);
     }
