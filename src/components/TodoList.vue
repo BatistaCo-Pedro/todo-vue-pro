@@ -66,7 +66,7 @@ export default {
       todo.description = this.edited_description;
       this.edit_todo_id = -1;
 
-      
+
     }
   },
 }
@@ -105,6 +105,7 @@ export default {
         <input v-if="edit_todo_id==todo.id" 
 					v-model="edited_description"
 					v-on:keyup.enter="save_description(todo)"
+          v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
 					ref="edit_description_input"
 					class="form-control"
 					>

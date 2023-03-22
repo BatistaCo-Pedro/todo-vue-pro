@@ -123,18 +123,6 @@ export const useTodoStore = defineStore('todo',{
         return todo.id != id;
       });
 		},
-  
-    saveTodo(newTodoData) {
-      this.todos = this.todos.filter(todo => {
-				if (todo.id == newTodoData.id) {
-					todo.name = newTodoData.new_name
-          todo.description = newTodoData.new_description
-          todo.category = newTodoData.new_category
-          todo.priority = newTodoData.new_prority
-				}
-				return todo;
-			});
-    },
 
     cloneTodo(todoData) {
       console.log("cloning todo: " + todoData.id)
