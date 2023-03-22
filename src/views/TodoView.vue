@@ -82,11 +82,12 @@ export default {
 
     </ul>
 
-    <div style="width: 100%;">
+    <div style="width: 100%; display: inline-flex;" >
       <input style="width: 100%;" class="searchbar" type="text" v-model="search_bar_input" placeholder="Search Todos" />
-      <div class="item error" v-if="search_bar_input && todos_open.length < 1">
+      <button class="button-no-style" style="margin: 0 1rem;"><i class="bi bi-funnel"></i></button>
+    </div>
+    <div class="item error" v-if="search_bar_input && todos_open.length < 1">
         <p>No results found!</p>
-      </div>
     </div>
 
     <!-- Tab content -->

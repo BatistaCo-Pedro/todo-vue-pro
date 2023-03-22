@@ -54,18 +54,12 @@ export default {
     edit_description(todo) {
       this.edit_todo_id = todo.id;
       this.edited_description = todo.description;
-
-      console.log(this.$refs)
-
-      this.$nextTick(() => {
-        this.$refs.edit_description_input.focus()
-      })
     },
 
     save_description(todo) {
       todo.description = this.edited_description;
       this.edit_todo_id = -1;
-
+      todo.open = false
     },
   },
 }
