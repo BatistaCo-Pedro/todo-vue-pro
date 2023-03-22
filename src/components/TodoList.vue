@@ -45,8 +45,8 @@ export default {
         todoData.isFavorite = false
     },
 
-    openDescription() {
-      this.descriptionOpen = true
+    showDescription(todo) {
+      todo.open = !todo.open;
     }
   },
 }
@@ -72,16 +72,16 @@ export default {
       </div>
       <div class="inline-flex-container" style="width: 100%;">
         <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
-        <p v-if="!descriptionOpen" >{{todo.description.length > 25 ? todo.description.substring(0, 25) + "..." : todo.description}}</p>
-        <button v-if="!descriptionOpen" class="button-no-style" style="display: flex;" @click="openDescription()">
-          <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
-        </button>
-        <button v-if="descriptionOpen" class="button-no-style" style="display: flex;" @click="openDescription()">
+        <p v-if="!todo.open" >{{todo.description.length > 25 ? todo.description.substring(0, 25) + "..." : todo.description}}</p>
+        <button v-if="!todo.open" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
           <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
       </div>
-      <div v-if="descriptionOpen">
+      <div v-if="todo.open" class="inline-flex-container">
         <p>{{ todo.description }}</p>
+        <button class="button-no-style" style="display: flex;" @click="showDescription(todo)">
+          <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
+        </button>
       </div>
       <div>
         <p>{{ todo.category }}</p>

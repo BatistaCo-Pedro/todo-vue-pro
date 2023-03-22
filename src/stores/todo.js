@@ -166,7 +166,8 @@ export const useTodoStore = defineStore('todo',{
           category: todoData.category,
           completed: todoData.completed,
           isFavorite: todoData.isFavorite,
-          priority: todoData.priority
+          priority: todoData.priority,
+          open: false,
         }
 			);
     }
