@@ -7,6 +7,7 @@ export const useTodoStore = defineStore('todo',{
     show_dash: false,
     show_filter_dash: false,
     filters:  ["sortName", "sortPriority", "sortCategory"],
+    isSorting: false,
     
     //to divide between search and non search todos
     is_searching: false,
@@ -47,6 +48,21 @@ export const useTodoStore = defineStore('todo',{
 
     todos_completed: (state) => {
       if (!state.todos) return
+
+      if(state.isSorting) {
+        state.todos.sort((todoA, todoB) => {
+          if (todoA.priority > todoB.priority) {
+            return 1;
+          }
+
+          if (todoB.priority > todoA.priority) {
+            return 1;
+          }
+
+          return 0
+        });
+      } 
+
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {

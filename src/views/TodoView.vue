@@ -15,7 +15,7 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters", 
-      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash"]),
+      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash", "isSorting"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
   },
   
@@ -100,7 +100,7 @@ export default {
     <div v-if="show_filter_dash">
       <div style="display: inline-flex; justify-content: space-between; width: 100%;">
         <div v-for="filter in filters">
-          <h6 style="margin: 0rem 0.5rem">{{ filter.substring(4) }}<button  class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
+          <h6 style="margin: 0rem 0.5rem">{{ filter.substring(4) }}<button @click="isSorting = !isSorting" class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
         </div>
       </div>
     </div>
