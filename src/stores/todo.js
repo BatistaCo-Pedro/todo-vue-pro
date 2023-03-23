@@ -5,6 +5,8 @@ export const useTodoStore = defineStore('todo',{
   state: () => ({ 
     show_add_button: true,
     show_dash: false,
+    show_filter_dash: false,
+    filters:  ["sortName", "sortPriority", "sortCategory"],
     
     //to divide between search and non search todos
     is_searching: false,

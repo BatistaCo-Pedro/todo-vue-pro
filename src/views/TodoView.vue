@@ -14,7 +14,8 @@ export default {
   },
 
   computed: {
-    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "show_add_button", "show_dash", "is_searching", "search_bar_input"]),
+    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters", 
+      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
   },
   
@@ -38,6 +39,10 @@ export default {
       this.new_description = "";
       this.new_category = "";
       this.new_priority = "";
+    },
+
+    showFilters() {
+
     },
   },
   
@@ -82,12 +87,22 @@ export default {
 
     </ul>
 
-    <div style="width: 100%; display: inline-flex;" >
-      <input style="width: 100%;" class="searchbar" type="text" v-model="search_bar_input" placeholder="Search Todos" />
-      <button class="button-no-style" style="margin: 0 1rem;"><i class="bi bi-funnel"></i></button>
+    <!-- searchbar -->
+    <div class="searchbar" style="display: inline-flex;  width: 100%;">
+      <input style="width: 100%;" class="search-input" type="text" v-model="search_bar_input" placeholder="Search Todos" />
+      <button @click="show_filter_dash = !show_filter_dash" class="button-no-style" style="margin: 0 1rem;"><h3 style="margin: 0;"><i class="bi bi-funnel"></i></h3></button>
     </div>
     <div class="item error" v-if="search_bar_input && todos_open.length < 1">
         <p>No results found!</p>
+    </div>
+
+    <!-- Filter Tab-->
+    <div v-if="show_filter_dash">
+      <div style="display: inline-flex; justify-content: space-between; width: 100%;">
+        <div v-for="filter in filters">
+          <h6 style="margin: 0rem 0.5rem">{{ filter.substring(4) }}<button  class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
+        </div>
+      </div>
     </div>
 
     <!-- Tab content -->
@@ -160,15 +175,21 @@ li {
 
 .searchbar {
   display: block;
-  width: 350px;
-  margin: 20px auto;
-  padding: 10px 45px;
+  margin: 0.75rem auto;
+  padding: 0.5rem 1rem;
   background: white no-repeat 15px center;
   background-size: 15px 15px;
   font-size: 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid #fff;
+  outline: none;
 }
 
 .error {
