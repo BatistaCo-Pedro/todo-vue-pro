@@ -5,6 +5,7 @@ export default {
 
   data() {
     return {
+      screenWidth: 0,
       descriptionOpen: false,
       edited_description: "",
       edit_todo_id: -1,
@@ -61,15 +62,46 @@ export default {
       this.edit_todo_id = -1;
       todo.open = false
     },
+
+    onScreenResize() {
+      window.addEventListener("resize", () => {
+        this.updateScreenWidth();
+      });
+    },
+
+    updateScreenWidth() {
+      this.screenWidth = window.innerWidth;
+    },
+
+    descriptionToShow(todo) {
+      if(this.screenWidth < 800) return todo.description.substring(0, 20) + "..."
+      if(todo.description.length > 60) return todo.description.substring(0, 60) + "..."
+      return todo.description
+    }
   },
+
+  mounted() {
+    this.updateScreenWidth();
+    this.onScreenResize();
+  }
 }
 </script>
 
 <template>
+  <div  v-for="todo in todos" style="width: 100%;" >
+  <div class="inline-flex-container" style="width: 100%;">
+    <div class="check-button-container">
+      <button v-if="screenWidth > 900" class="btn btn-sm btn-outline-primary m-2 m-mob" 
+      style="color: white; border-color: white;"
+      @click="toggle_todo_state(todo.id);">
+        <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
+        <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
+      </button>
+    </div>
+  
+  <ul class="list-group" style="width: 100%;">
 
-  <ul class="list-group">
-
-    <li class="list-group-item theme" v-for="todo in todos" style="margin: 0.5rem 0 0 0;" >
+    <li class="list-group-item theme" style="margin: 0.5rem 0 0 0; width: 100%;" >
       <div class="inline-flex-container-space">
         <h3>{{todo.name}}</h3>
         <div class="inline-flex-container">
@@ -84,9 +116,10 @@ export default {
         </div>
       </div>
 
-      <div class="inline-flex-container" style="width: 100%;">
-        <p style="width: 20%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
-        <p v-if="!todo.open" >{{todo.description.length > 25 ? todo.description.substring(0, 25) + "..." : todo.description}}</p>
+      <div class="inline-flex-container" style="width: 100%; height: 1.3rem;">
+        <p style="width: 25%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
+        <p v-if="!todo.open" >
+        {{ descriptionToShow(todo) }}</p>
         <button v-if="!todo.open" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
           <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
@@ -110,20 +143,23 @@ export default {
           <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
       </div>
-
-      <div>
-        <h6>{{ todo.category }}</h6>
-      </div>
-      <div class="inline-flex-container" style="width: 100%;">
-        <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="toggle_todo_state(todo.id);">{{ todo.completed == true ? ' Open' : ' Complete' }}</button>
-        <button class="btn btn-sm btn-outline-primary m-2 m-mob" @click="edit_todo(todo.id);"><i class="bi bi-pen"></i> Edit Todo</button>
+      <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
+        <h6 style="width: 70%; align-self: center;">{{ todo.category }}</h6>
         <div class="align-right">
-          <button class="btn btn-sm btn-outline-primary m-2 m-mob" style="" @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i> Remove</button>
+          <button v-if="screenWidth < 900" class="btn btn-sm btn-outline-primary m-2 m-mob" 
+          style="color: var(--color-text); border-color: var(--color-text);"
+          @click="toggle_todo_state(todo.id);">
+          <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
+          <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
+          </button>
+          <button class="btn btn-sm btn-outline-primary m-2 m-mob" 
+          style="border-color: var(--color-text); color: var(--color-text);" @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i> {{ screenWidth > 900 ? "Remove" : "" }}</button>
         </div>  
       </div> 
     </li>
   </ul>
-  
+  </div>
+  </div>
 </template>
 
 <style scoped>
@@ -155,13 +191,21 @@ export default {
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
+  align-content: center;
 }
 
-@media (max-width: 1224px) {
+.check-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  margin: 0 0.5rem 0 0;
+}
+
+@media (max-width: 900px) {
   .align-right {
-    width: 33%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    align-content: center;
   }
 
   .m-mob {

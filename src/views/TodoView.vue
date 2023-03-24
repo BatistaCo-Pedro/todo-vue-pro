@@ -100,7 +100,7 @@ export default {
     <div v-if="show_filter_dash">
       <div style="display: inline-flex; justify-content: space-between; width: 100%;">
         <div v-for="filter in filters">
-          <h6 style="margin: 0rem 0.5rem">{{ filter.substring(4) }}<button @click="isSorting = !isSorting" class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
+          <h6 style="margin: 0rem 1rem">{{ filter.substring(4) }}<button @click="isSorting = !isSorting" class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
         </div>
       </div>
     </div>
@@ -177,7 +177,7 @@ li {
   display: block;
   margin: 0.75rem auto;
   padding: 0.5rem 1rem;
-  background: white no-repeat 15px center;
+  background: var(--color-background-mute) no-repeat 15px center;
   background-size: 15px 15px;
   font-size: 16px;
   border: none;
@@ -188,8 +188,8 @@ li {
 .search-input {
   border: none;
   background: transparent;
-  border-bottom: 1px solid #fff;
   outline: none;
+  color: var(--color-text);
 }
 
 .error {

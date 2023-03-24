@@ -49,19 +49,7 @@ export const useTodoStore = defineStore('todo',{
     todos_completed: (state) => {
       if (!state.todos) return
 
-      if(state.isSorting) {
-        state.todos.sort((todoA, todoB) => {
-          if (todoA.priority > todoB.priority) {
-            return 1;
-          }
-
-          if (todoB.priority > todoA.priority) {
-            return 1;
-          }
-
-          return 0
-        });
-      } 
+      
 
       //filter todos on search
       if(state.is_searching) {
@@ -76,7 +64,20 @@ export const useTodoStore = defineStore('todo',{
     },
 
     todos_open: (state) => {
-      if (!state.todos) return
+      if(state.isSorting) {
+        state.todos.sort((todoA, todoB) => {
+          if (todoA.priority > todoB.priority) {
+            return 1;
+          }
+
+          if (todoB.priority > todoA.priority) {
+            return 1;
+          }
+
+          return 0
+        });
+      } if (!state.todos) return
+
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
