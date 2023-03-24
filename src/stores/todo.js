@@ -1,13 +1,33 @@
 import { defineStore } from 'pinia'
 
+function mapTodoPriorities(todoA, todoB) {
+    let todos = [todoA, todoB]
+    todos.map(todo => {
+      if(todo.priority == "Highest") 
+        todo.priorityNr = 1
+      if(todo.priority == "High") 
+        todo.priorityNr = 2
+      if(todo.priority == "Medium") 
+        todo.priorityNr = 3
+      if(todo.priority == "Low") 
+        todo.priorityNr = 4  
+  })
+}
+
+function filterTodos(state, todo) {
+  return todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
+   || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase())
+} 
+
 export const useTodoStore = defineStore('todo',{
 
   state: () => ({ 
     show_add_button: true,
     show_dash: false,
     show_filter_dash: false,
-    filters:  ["sortName", "sortPriority", "sortCategory"],
-    isSorting: false,
+    isSortingName: false,
+    isSortingPriority: false,
+    isSortingCategory: false,
     
     //to divide between search and non search todos
     is_searching: false,
@@ -22,6 +42,7 @@ export const useTodoStore = defineStore('todo',{
         completed: false,
         isFavorite: false,
         priority: "Low",
+        priorityNr: 0,
         open: false,
       }
     ],
@@ -31,6 +52,10 @@ export const useTodoStore = defineStore('todo',{
   persist: true,
 
   getters: {
+
+    filters: (state) => {
+      return [state.isSortingName, state.isSortingPriority, state.isSortingCategory]
+    },
 
     favorite_todos: (state) => {
       if (!state.todos) return
@@ -52,7 +77,7 @@ export const useTodoStore = defineStore('todo',{
       
 
       //filter todos on search
-      if(state.is_searching) {
+      if(state.isSortingPriority) {
         return state.todos.filter(todo => {
           return todo.completed == true && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
           || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
@@ -64,25 +89,23 @@ export const useTodoStore = defineStore('todo',{
     },
 
     todos_open: (state) => {
-      if(state.isSorting) {
+      if (!state.todos) return
+      if(state.isSortingPriority) {
+        state.isSortingName = false
+        state.isSortingCategory = false
         state.todos.sort((todoA, todoB) => {
-          if (todoA.priority > todoB.priority) {
-            return 1;
-          }
-
-          if (todoB.priority > todoA.priority) {
-            return 1;
-          }
-
-          return 0
+          mapTodoPriorities(todoA, todoB)
+          return todoA.priorityNr - todoB.priorityNr
         });
-      } if (!state.todos) return
-
+      }
+      else state.todos.sort((todoA, todoB) => {
+        return todoA.id - todoB.id
+      })
+      
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.completed == false && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
+          return todo.completed == false && filterTodos(state, todo)
         })
       }
       return state.todos.filter(todo => {

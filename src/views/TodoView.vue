@@ -15,7 +15,7 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters", 
-      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash", "isSorting"]),
+      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash", "isSortingPriority"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
   },
   
@@ -41,9 +41,17 @@ export default {
       this.new_priority = "";
     },
 
-    showFilters() {
-
+    whatFilter(index) {
+      if(index == 1) return "Priority"
+      if(index == 2) return "Name"
+      return "Categeory"
     },
+
+    sortTodos(index) {
+      if(index == 1) this.isSortingPriority = !this.isSortingPriority
+      if(index == 2) this.isSortingName = !this.shallowReactive
+      if(index == 3) this.isSortingCategory = !this.isSortingCategory 
+    }
   },
   
   watch: {
@@ -99,8 +107,15 @@ export default {
     <!-- Filter Tab-->
     <div v-if="show_filter_dash">
       <div style="display: inline-flex; justify-content: space-between; width: 100%;">
-        <div v-for="filter in filters">
-          <h6 style="margin: 0rem 1rem">{{ filter.substring(4) }}<button @click="isSorting = !isSorting" class="button-no-style"><i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i></button></h6>
+        <div v-for="(filter, index) in filters">
+          <h6 style="margin: 0rem 1rem">{{ whatFilter(index) }}
+            <button v-if="!filter" @click="sortTodos(index)" class="button-no-style">
+            <i class="bi bi-caret-right-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
+            </button>
+            <button v-if="filter" @click="sortTodos(index)" class="button-no-style">
+            <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
+            </button>
+          </h6>       
         </div>
       </div>
     </div>
