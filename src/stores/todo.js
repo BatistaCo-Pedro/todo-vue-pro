@@ -62,8 +62,7 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.is_searching) {
         return state.todos.filter(todo => {
-          return todo.isFavorite && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
+          return todo.isFavorite && filterTodos(state, todo)
         })
       }
       return state.todos.filter(todo => {
@@ -79,8 +78,7 @@ export const useTodoStore = defineStore('todo',{
       //filter todos on search
       if(state.isSortingPriority) {
         return state.todos.filter(todo => {
-          return todo.completed == true && (todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase()) 
-          || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase()));
+          return todo.completed == true && filterTodos(state, todo)
         })
       }
       return state.todos.filter(todo => {
@@ -97,6 +95,14 @@ export const useTodoStore = defineStore('todo',{
           mapTodoPriorities(todoA, todoB)
           return todoA.priorityNr - todoB.priorityNr
         });
+      }
+      else if(state.isSortingCategory) {
+        state.isSortingName = false
+        state.isSortingPriority = false
+        console.log(state.todos.sort((todoA, todoB) => {
+          return todoA.category > todoB.category
+        }))
+        
       }
       else state.todos.sort((todoA, todoB) => {
         return todoA.id - todoB.id
@@ -115,6 +121,12 @@ export const useTodoStore = defineStore('todo',{
   },
 
   actions: {
+    
+    sortTodos(index) {
+      if(index == 1) this.isSortingPriority = !this.isSortingPriority
+      if(index == 2) this.isSortingCategory = !this.isSortingCategory
+      if(index == 0) this.isSortingName = !this.isSortingName 
+    },
 
     toggleTodo(id) {
 

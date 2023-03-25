@@ -15,17 +15,18 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters", 
-      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash", "isSortingPriority"]),
+      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
   },
   
   methods: {
-   ...mapActions(useTodoStore, ['toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", "cloneTodo"]),
+   ...mapActions(useTodoStore, ['toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", 
+   "cloneTodo", "sortTodos"]),
 
     showDash() {
       this.show_dash = true; 
       this.show_add_button= false;
-    },
+    }, 
 
     closeDash() {
       this.show_dash = false; 
@@ -43,15 +44,9 @@ export default {
 
     whatFilter(index) {
       if(index == 1) return "Priority"
-      if(index == 2) return "Name"
-      return "Categeory"
+      if(index == 2) return "Category"
+      return "Name"
     },
-
-    sortTodos(index) {
-      if(index == 1) this.isSortingPriority = !this.isSortingPriority
-      if(index == 2) this.isSortingName = !this.shallowReactive
-      if(index == 3) this.isSortingCategory = !this.isSortingCategory 
-    }
   },
   
   watch: {
