@@ -121,7 +121,6 @@ export default {
       <div class="tab-pane fade show active" id="open-todos" role="tabpanel">
         <TodoList :todos="todos_open"
         @toggle-todo-state="toggleTodo" 
-        @edit-todo="editTodo" 
         @save-todo="saveTodo"
         @remove-todo="removeTodo"
         @clone-todo="cloneTodo"/>
@@ -130,7 +129,6 @@ export default {
       <div class="tab-pane fade" id="closed-todos" role="tabpanel">
         <TodoList :todos="todos_completed" 
         @toggle-todo-state="toggleTodo" 
-        @edit-todo="editTodo" 
         @save-todo="saveTodo"
         @remove-todo="removeTodo"/>
       </div>
@@ -138,11 +136,9 @@ export default {
       <div class="tab-pane fade" id="favorite-todos" role="tabpanel">
         <TodoList :todos="favorite_todos" 
         @toggle-todo-state="toggleTodo" 
-        @edit-todo="editTodo" 
         @save-todo="saveTodo"
         @remove-todo="removeTodo"/>
       </div>
-
     </div>
 
     <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" @click="showDash()">Add Todo</button>

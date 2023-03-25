@@ -19,6 +19,27 @@ function filterTodos(state, todo) {
    || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase())
 } 
 
+function sortTodosAfterName(state) {
+
+}
+
+function sortTodosAfterPriority(state) {
+  state.isSortingName = false
+  state.isSortingCategory = false
+  state.todos.sort((todoA, todoB) => {
+    mapTodoPriorities(todoA, todoB)
+    return todoA.priorityNr - todoB.priorityNr
+  });
+}
+
+function sortTodosAfterCategory(state) {
+  state.isSortingName = false
+  state.isSortingPriority = false
+  console.log(state.todos.sort((todoA, todoB) => {
+    return todoA.category.localeCompare(todoB.category)
+  })) 
+}
+
 export const useTodoStore = defineStore('todo',{
 
   state: () => ({ 
@@ -89,24 +110,19 @@ export const useTodoStore = defineStore('todo',{
     todos_open: (state) => {
       if (!state.todos) return
       if(state.isSortingPriority) {
-        state.isSortingName = false
-        state.isSortingCategory = false
+        sortTodosAfterPriority(state)
+      }
+
+      if(state.isSortingCategory) {
+        sortTodosAfterCategory(state)    
+      }
+
+      //if not sorting
+      if(state.filters.every(el => el == false)) {
         state.todos.sort((todoA, todoB) => {
-          mapTodoPriorities(todoA, todoB)
-          return todoA.priorityNr - todoB.priorityNr
-        });
-      }
-      else if(state.isSortingCategory) {
-        state.isSortingName = false
-        state.isSortingPriority = false
-        console.log(state.todos.sort((todoA, todoB) => {
-          return todoA.category > todoB.category
-        }))
-        
-      }
-      else state.todos.sort((todoA, todoB) => {
-        return todoA.id - todoB.id
-      })
+          return todoA.id - todoB.id
+        })
+      } 
       
       //filter todos on search
       if(state.is_searching) {

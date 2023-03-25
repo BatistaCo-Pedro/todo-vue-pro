@@ -22,10 +22,6 @@ export default {
 			this.$emit('toggle-todo-state', id)
 		},
 
-    edit_todo(id) {
-      this.$emit("edit-todo", id)
-    },
-
     save_todo() {
       this.$emit("save-todo")
     },
@@ -110,7 +106,7 @@ export default {
           <div v-if="todo.priority == 'High'" class="priorities"><h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5></div>
           <div v-if="todo.priority == 'Highest'" class="priorities"><h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5></div>
 
-          <button @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
+          <button v-if="!todo.completed" @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
           <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5></button>
           <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5></button>
         </div>
