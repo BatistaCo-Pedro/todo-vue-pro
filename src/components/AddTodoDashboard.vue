@@ -35,33 +35,34 @@ export default {
     },
 
     watch: {
-        show_dash() {
-          this.$nextTick(() => {
-              this.$refs.edit_todo_input.focus();
-          })
-        },
-        new_description() {
-          if(this.new_description.toLocaleLowerCase() === "li()") {
-            this.new_description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed" +
-            "diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua." + 
-            "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
-            "sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed " + 
-            "diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. " + 
-            "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
-            "sanctus est Lorem ipsum dolor sit amet."
-          }
-        },
-        new_category() {
-          this.categories.map(category => {
-            category.name == this.new_category ? this.categoryId = category.id : this.categoryId = -1
-          })
+      show_dash() {
+        this.$nextTick(() => {
+            this.$refs.edit_todo_input.focus();
+        })
+      },
+      new_description() {
+        if(this.new_description.toLocaleLowerCase() === "li()") {
+          this.new_description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed" +
+          "diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua." + 
+          "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
+          "sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed " + 
+          "diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. " + 
+          "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
+          "sanctus est Lorem ipsum dolor sit amet."
         }
+      },
+      new_category() {
+        this.categoryId = this.categories.find(category => {
+          return category.name == this.new_category
+        }).id
+        console.log(this.categoryId)
+      }
     }
 }
 </script>
 
 <template>
-    <div v-if="show_dash" class="container-flex form-group">
+  <div v-if="show_dash" class="container-flex form-group">
     <form class="needs-validation" @submit="submit_todo(new_todo, new_description, categoryId, new_priority)">
       <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
         name="addTodoInput"

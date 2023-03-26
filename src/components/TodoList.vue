@@ -73,7 +73,7 @@ export default {
       if(this.screenWidth < 800) return todo.description.substring(0, 20) + "..."
       if(todo.description.length > 60) return todo.description.substring(0, 60) + "..."
       return todo.description
-    }
+    },
   },
 
   mounted() {
@@ -139,6 +139,7 @@ export default {
           <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
         </button>
       </div>
+
       <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
         <h6 style="width: 70%; align-self: center;">{{ todo.category }}</h6>
         <div class="align-right">

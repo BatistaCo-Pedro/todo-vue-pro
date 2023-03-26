@@ -77,6 +77,12 @@ export const useTodoStore = defineStore('todo', {
       return [state.isSortingName, state.isSortingPriority, state.isSortingCategory]
     },
 
+    todoCategory: (state) => {
+      return state.todos.map(todo => {
+        return todo.category
+      })
+    },
+
     favorite_todos: (state) => {
       if (!state.todos) return
       //filter todos on search
@@ -175,7 +181,9 @@ export const useTodoStore = defineStore('todo', {
     addTodo(new_Todo, new_description, new_category_id, new_prority) {
 			let new_id;
       let new_category;
-      console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category}!`)
+      const catStore = useCategoryStore()
+
+      console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category_id}!`)
 
       //assign new id
 			if (this.todos.length) {
@@ -184,16 +192,15 @@ export const useTodoStore = defineStore('todo', {
 			else {
 				new_id = 1;
 			}
-
+      console.log(new_category_id)
       //Category Validation as it's not required to give a category
       if(new_category_id == -1) {
         new_category = "No Category"
       }
       else {
-        //console.log(this.categories)
-        new_category = this.categories.map(category => {
-          if(category.id == new_category_id) return category.name
-       })
+        new_category = catStore.categories.find(category => {
+          return category.id == new_category_id
+        })
       }
 
       this.todos.push({
@@ -294,6 +301,7 @@ export const useCategoryStore = defineStore('category', {
     saveCategory(data) {
       this.categories = this.categories.filter(category => {
         if (category.id == data.id) {
+          category.id = data.id
           category.name = data.new_name;
         }
         return category;
