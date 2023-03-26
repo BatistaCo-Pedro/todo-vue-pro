@@ -103,14 +103,14 @@ export default {
     <div v-if="show_filter_dash">
       <div style="display: inline-flex; justify-content: space-between; width: 100%;">
         <div v-for="(filter, index) in filters">
-          <h6 style="margin: 0rem 1rem">{{ whatFilter(index) }}
+          <h6 style="margin: 0rem 1rem" class="adaptMobileSize">{{ whatFilter(index) }}
             <button v-if="!filter" @click="sortTodos(index)" class="button-no-style">
             <i class="bi bi-caret-right-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
             </button>
             <button v-if="filter" @click="sortTodos(index)" class="button-no-style">
             <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
             </button>
-          </h6>       
+          </h6>
         </div>
       </div>
     </div>
@@ -200,5 +200,11 @@ li {
 
 .error {
   background-color: tomato;
+}
+
+@media (max-width: 900px) {
+  .adaptMobileSize {
+    font-size: 0.9rem
+  }
 }
 </style>

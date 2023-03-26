@@ -20,12 +20,12 @@ function filterTodos(state, todo) {
 } 
 
 function sortTodosAfterName(state) {
-
+  state.todos.sort((todoA, todoB) => {
+    return todoA.name.localeCompare(todoB.name)
+  })
 }
 
 function sortTodosAfterPriority(state) {
-  state.isSortingName = false
-  state.isSortingCategory = false
   state.todos.sort((todoA, todoB) => {
     mapTodoPriorities(todoA, todoB)
     return todoA.priorityNr - todoB.priorityNr
@@ -33,11 +33,9 @@ function sortTodosAfterPriority(state) {
 }
 
 function sortTodosAfterCategory(state) {
-  state.isSortingName = false
-  state.isSortingPriority = false
-  console.log(state.todos.sort((todoA, todoB) => {
+  state.todos.sort((todoA, todoB) => {
     return todoA.category.localeCompare(todoB.category)
-  })) 
+  })
 }
 
 export const useTodoStore = defineStore('todo',{
@@ -109,12 +107,17 @@ export const useTodoStore = defineStore('todo',{
 
     todos_open: (state) => {
       if (!state.todos) return
+
       if(state.isSortingPriority) {
         sortTodosAfterPriority(state)
       }
 
       if(state.isSortingCategory) {
         sortTodosAfterCategory(state)    
+      }
+
+      if(state.isSortingName) {
+        sortTodosAfterName(state)
       }
 
       //if not sorting
@@ -139,9 +142,21 @@ export const useTodoStore = defineStore('todo',{
   actions: {
     
     sortTodos(index) {
-      if(index == 1) this.isSortingPriority = !this.isSortingPriority
-      if(index == 2) this.isSortingCategory = !this.isSortingCategory
-      if(index == 0) this.isSortingName = !this.isSortingName 
+      if(index == 0) {
+        this.isSortingName = !this.isSortingName
+        this.isSortingCategory = false
+        this.isSortingPriority = false
+      }
+      if(index == 1) {
+        this.isSortingPriority = !this.isSortingPriority
+        this.isSortingName = false
+        this.isSortingCategory = false
+      }
+      if(index == 2) {
+        this.isSortingCategory = !this.isSortingCategory
+        this.isSortingName = false
+        this.isSortingPriority = false
+      }
     },
 
     toggleTodo(id) {
