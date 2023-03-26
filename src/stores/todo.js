@@ -38,7 +38,7 @@ function sortTodosAfterCategory(state) {
   })
 }
 
-export const useTodoStore = defineStore('todo',{
+export const useTodoStore = defineStore('todo', {
 
   state: () => ({ 
     show_add_button: true,
@@ -58,6 +58,7 @@ export const useTodoStore = defineStore('todo',{
         name: "test",
         description: "This is a simple test!",
         category: "No Category",
+        categoryId: 0,
         completed: false,
         isFavorite: false,
         priority: "Low",
@@ -171,8 +172,9 @@ export const useTodoStore = defineStore('todo',{
       })
     },
 
-    addTodo(new_Todo, new_description, new_category, new_prority) {
+    addTodo(new_Todo, new_description, new_category_id, new_prority) {
 			let new_id;
+      let new_category;
       console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category}!`)
 
       //assign new id
@@ -184,8 +186,14 @@ export const useTodoStore = defineStore('todo',{
 			}
 
       //Category Validation as it's not required to give a category
-      if(new_category == "") {
+      if(new_category_id == -1) {
         new_category = "No Category"
+      }
+      else {
+        //console.log(this.categories)
+        new_category = this.categories.map(category => {
+          if(category.id == new_category_id) return category.name
+       })
       }
 
       this.todos.push({

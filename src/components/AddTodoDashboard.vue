@@ -11,6 +11,7 @@ export default {
             new_description: "",
             new_category: "",
             new_priority: "Low",
+            categoryId: -1,
         }
     },
 
@@ -20,7 +21,7 @@ export default {
 
     computed: {
         ...mapWritableState(useTodoStore, ["show_add_button", "show_dash"]),
-        ...mapWritableState(useCategoryStore, ['category_names']),
+        ...mapWritableState(useCategoryStore, ['category_names', 'categories']),
     },
 
     methods: {
@@ -46,17 +47,22 @@ export default {
             "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
             "sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed " + 
             "diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. " + 
-            "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            "At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata" + 
+            "sanctus est Lorem ipsum dolor sit amet."
           }
+        },
+        new_category() {
+          this.categories.map(category => {
+            category.name == this.new_category ? this.categoryId = category.id : this.categoryId = -1
+          })
         }
     }
 }
 </script>
 
-
 <template>
     <div v-if="show_dash" class="container-flex form-group">
-    <form class="needs-validation" @submit="submit_todo(new_todo, new_description, new_category, new_priority)">
+    <form class="needs-validation" @submit="submit_todo(new_todo, new_description, categoryId, new_priority)">
       <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
         name="addTodoInput"
         v-model="new_todo"
