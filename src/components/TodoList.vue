@@ -87,8 +87,8 @@ export default {
   <div  v-for="todo in todos" style="width: 100%;" >
   <div class="inline-flex-container" style="width: 100%;">
     <div class="check-button-container">
-      <button v-if="screenWidth > 900" class="btn btn-sm btn-outline-primary m-2 m-mob" 
-      style="color: white; border-color: white;"
+      <button v-if="screenWidth > 900" class="btn btn-sm btn-outline-secondary m-2 m-mob"
+        style="color: var(--color-text); border-color: var(--color-text);"
       @click="toggle_todo_state(todo.id);">
         <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
         <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
@@ -143,13 +143,13 @@ export default {
       <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
         <h6 style="width: 70%; align-self: center;">{{ todo.category }}</h6>
         <div class="align-right">
-          <button v-if="screenWidth < 900" class="btn btn-sm btn-outline-primary m-2 m-mob" 
+          <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob" 
           style="color: var(--color-text); border-color: var(--color-text);"
           @click="toggle_todo_state(todo.id);">
           <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
           <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
           </button>
-          <button class="btn btn-sm btn-outline-primary m-2 m-mob" 
+          <button class="btn btn-sm m-2 m-mob"
           style="border-color: var(--color-text); color: var(--color-text);" @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i> {{ screenWidth > 900 ? "Remove" : "" }}</button>
         </div>  
       </div> 

@@ -99,7 +99,7 @@ export const useTodoStore = defineStore('todo', {
     todos_completed: (state) => {
       if (!state.todos) return
 
-      
+   
 
       //filter todos on search
       if(state.isSortingPriority) {
@@ -200,7 +200,8 @@ export const useTodoStore = defineStore('todo', {
       else {
         new_category = catStore.categories.find(category => {
           return category.id == new_category_id
-        })
+        }).name
+        console.log(new_category)
       }
 
       this.todos.push({
@@ -208,6 +209,7 @@ export const useTodoStore = defineStore('todo', {
         name: new_Todo,
         description: new_description,
         category: new_category,
+        categoryId: new_category_id,
         completed: false,
         isFavorite: false,
         priority: new_prority,
@@ -236,6 +238,7 @@ export const useTodoStore = defineStore('todo', {
 					name: todoData.name,
           description: todoData.description,
           category: todoData.category,
+          categoryId: todo.categoryId,
           completed: todoData.completed,
           isFavorite: todoData.isFavorite,
           priority: todoData.priority,
@@ -299,10 +302,20 @@ export const useCategoryStore = defineStore('category', {
     },
 
     saveCategory(data) {
+      const todosStore = useTodoStore()
+
       this.categories = this.categories.filter(category => {
         if (category.id == data.id) {
           category.id = data.id
           category.name = data.new_name;
+
+          let todo_to_change = todosStore.todos.find(todo => {
+            return todo.categoryId == category.id
+          })
+          
+          if(todo_to_change != null)  {
+            todo_to_change.category = category.name
+          }
         }
         return category;
       });
@@ -310,9 +323,21 @@ export const useCategoryStore = defineStore('category', {
     },
 
     removeCategory(id) {
+      const todosStore = useTodoStore()
+
       this.categories = this.categories.filter(category => {
         return category.id != id;
       });
+
+      let todo_to_change = todosStore.todos.find(todo => {
+        return todo.categoryId == id
+      })
+      
+      if(todo_to_change != null)  {
+        todo_to_change.category = "No category"
+        todo_to_change.categoryId = 0
+      }
+
     }
   },
 })

@@ -33,13 +33,8 @@ export default {
       this.show_add_button = true; 
     },
 
-    submitTodo(new_Todo, new_description, new_category, new_priority) {
-      this.addTodo(new_Todo, new_description, new_category, new_priority);
-      //reset values
-      this.new_todo = "";
-      this.new_description = "";
-      this.new_category = "";
-      this.new_priority = "";
+    submitTodo(new_Todo, new_description, new_category_id, new_priority) {
+      this.addTodo(new_Todo, new_description, new_category_id, new_priority);
     },
 
     whatFilter(index) {

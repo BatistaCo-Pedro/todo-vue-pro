@@ -6,17 +6,17 @@ import VueMultiselect from 'vue-multiselect'
 
 export default {
     data() {
-        return {
-            new_todo: "",
-            new_description: "",
-            new_category: "",
-            new_priority: "Low",
-            categoryId: -1,
-        }
+      return {
+        new_todo: "",
+        new_description: "",
+        new_category: "",
+        new_priority: "",
+        new_categoryId: -1,
+      }
     },
 
     components: {
-        VueMultiselect,
+      VueMultiselect,
     },
 
     computed: {
@@ -25,21 +25,26 @@ export default {
     },
 
     methods: {
-        submit_todo(new_todo, new_description, new_category, new_priority) {
-            this.$emit('submit-todo', new_todo, new_description, new_category, new_priority)
-            this.new_todo = "";
-            this.new_category = "";
-            this.new_description = "";
-            this.new_priority = "Low"
-        }
+      submit_todo(new_todo, new_description, new_category_id, new_priority) {
+          console.log("what")
+          this.$emit('submit-todo', new_todo, new_description, new_category_id, new_priority)
+          this.new_todo = "";
+          this.new_category = "";
+          this.new_description = "";
+          this.new_priority = ""
+          this.categoryId = -1
+      }
     },
 
     watch: {
       show_dash() {
-        this.$nextTick(() => {
-            this.$refs.edit_todo_input.focus();
-        })
+        if(this.show_dash) {
+          this.$nextTick(() => {
+              this.$refs.edit_todo_input.focus();
+          })
+        }
       },
+
       new_description() {
         if(this.new_description.toLocaleLowerCase() === "li()") {
           this.new_description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed" +
@@ -51,19 +56,22 @@ export default {
           "sanctus est Lorem ipsum dolor sit amet."
         }
       },
+
       new_category() {
-        this.categoryId = this.categories.find(category => {
-          return category.name == this.new_category
-        }).id
-        console.log(this.categoryId)
-      }
+        if(this.new_category) {
+          this.new_categoryId = this.categories.find(category => {
+            return category.name == this.new_category
+          }).id
+          console.log(this.new_categoryId)
+        }
+      },
     }
 }
 </script>
 
 <template>
   <div v-if="show_dash" class="container-flex form-group">
-    <form class="needs-validation" @submit="submit_todo(new_todo, new_description, categoryId, new_priority)">
+    <form class="needs-validation" @submit.prevent="submit_todo(new_todo, new_description, new_categoryId, new_priority)">
       <input type="text" class="margins form-control theme-softer" id="todoNameInput" style="margin-top: 0.1rem!important;"
         name="addTodoInput"
         v-model="new_todo"
@@ -73,8 +81,8 @@ export default {
 
       <textarea id="todoDescriptionId" class="margins justify-right form-control theme-softer" placeholder="Description" cols="25"
         v-model="new_description"
-        required
-      ></textarea>
+        required>
+      </textarea>
       <br>
 
       <div>Priority: {{ new_priority }}</div>
@@ -107,8 +115,7 @@ export default {
       placeholder="Pick a value"></VueMultiselect>
 
       <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
-        type="submit"
-      >
+        type="submit">
       Add</button>
     </form>
   </div>
