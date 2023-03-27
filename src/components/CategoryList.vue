@@ -17,7 +17,7 @@
 			</div>
 			
 
-			<div class="col-4">
+			<div class="col-4 flex-container-inline">
 
 				<a 
 				class="btn btn-xs float-end" 
@@ -99,5 +99,11 @@ export default {
 	background: #eee;
 	border: 1px solid #ddd;
 	border-radius: 5px;
+}
+
+.flex-container-inline {
+	display: inline-flex;
+	align-content: center;
+	flex-wrap: nowrap;
 }
 </style>

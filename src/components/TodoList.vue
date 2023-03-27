@@ -1,5 +1,7 @@
 <script>
 
+import VueMultiselect from 'vue-multiselect'
+
 export default {
   name: 'TodoList',
 
@@ -14,6 +16,10 @@ export default {
 
 	props: {
     todos: Array,
+  },
+
+  components: {
+    VueMultiselect,
   },
 
   methods: {
@@ -51,6 +57,10 @@ export default {
     editDescription(todo) {
       this.edit_todo_id = todo.id;
       this.edited_description = todo.description;
+
+      this.$nextTick(() => {
+        this.$refs.edit_description_input.focus()
+      })
     },
 
     saveDescription(todo) {
@@ -84,80 +94,95 @@ export default {
 </script>
 
 <template>
-  <div  v-for="todo in todos" style="width: 100%;" >
-  <div class="inline-flex-container" style="width: 100%;">
-    <div class="check-button-container">
-      <button v-if="screenWidth > 900" class="btn btn-sm btn-outline-secondary m-2 m-mob"
-        style="color: var(--color-text); border-color: var(--color-text);"
-      @click="toggle_todo_state(todo.id);">
-        <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
-        <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
-      </button>
-    </div>
-  
-  <ul class="list-group" style="width: 100%;">
-
-    <li class="list-group-item theme" style="margin: 0.5rem 0 0 0; width: 100%;" >
-      <div class="inline-flex-container-space">
-        <h3>{{todo.name}}</h3>
-        <div class="inline-flex-container">
-          <div v-if="todo.priority == 'Low'" class="priorities"><h5 style="color: green;"><i class="bi bi-4-circle-fill"></i></h5></div>
-          <div v-if="todo.priority == 'Medium'" class="priorities"><h5 style="color: darkgoldenrod;"><i class="bi bi-3-circle-fill"></i></h5></div>
-          <div v-if="todo.priority == 'High'" class="priorities"><h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5></div>
-          <div v-if="todo.priority == 'Highest'" class="priorities"><h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5></div>
-
-          <button v-if="!todo.completed" @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem"><h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5></button>
-          <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5></button>
-          <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style"><h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5></button>
-        </div>
-      </div>
-
-      <div class="inline-flex-container" style="width: 100%; height: 1.3rem;">
-        <p style="width: 25%;" :class="todo.completed == true ? 'done': 'open'">{{todo.completed == true ? 'Finished!' : 'Open'}}</p>
-        <p v-if="!todo.open" >
-        {{ descriptionToShow(todo) }}</p>
-        <button v-if="!todo.open" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
-          <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
-        </button>
-      </div>
-
-      <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
-
-        <input v-if="edit_todo_id == todo.id" 
-					v-model="edited_description"
-					v-on:keyup.enter="saveDescription(todo)"
-					ref="edit_description_input"
-					class="form-control"
-          style="width: 100%;"
-					>
-        <p v-else>{{ todo.description }}</p>
-
-        <button class="button-no-style" style="display: flex;" @click="editDescription(todo)">
-          <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
-        </button>
-        <button class="button-no-style" style="display: flex;" @click="showDescription(todo)">
-          <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
-        </button>
-      </div>
-
-      <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
-        <h6 style="width: 70%; align-self: center;">{{ todo.category }}</h6>
-        <div class="align-right">
-          <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob" 
-          style="color: var(--color-text); border-color: var(--color-text);"
+  <div v-for="todo in todos" style="width: 100%;">
+    <div class="inline-flex-container" style="width: 100%;">
+      <div class="check-button-container">
+        <button v-if="screenWidth > 900" class="btn btn-sm btn-outline-secondary m-2 m-mob"
+          style="color: var(--color-text); border-color: var(--color-text);" 
           @click="toggle_todo_state(todo.id);">
           <h5 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h5>
           <h5 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h5>
-          </button>
-          <button class="btn btn-sm m-2 m-mob"
-          style="border-color: var(--color-text); color: var(--color-text);" @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i> {{ screenWidth > 900 ? "Remove" : "" }}</button>
-        </div>  
-      </div> 
-    </li>
-  </ul>
+        </button>
+      </div>
+
+      <ul class="list-group" style="width: 100%;">
+
+        <li class="list-group-item theme" style="margin: 0.5rem 0 0 0; width: 100%;">
+          <div class="inline-flex-container-space">
+            <h3>{{ todo.name }}</h3>
+            <div class="inline-flex-container">
+              <div v-if="todo.priority == 'Low'" class="priorities">
+                <h5 style="color: green;"><i class="bi bi-4-circle-fill"></i></h5>
+              </div>
+              <div v-if="todo.priority == 'Medium'" class="priorities">
+                <h5 style="color: darkgoldenrod;"><i class="bi bi-3-circle-fill"></i></h5>
+              </div>
+              <div v-if="todo.priority == 'High'" class="priorities">
+                <h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5>
+              </div>
+              <div v-if="todo.priority == 'Highest'" class="priorities">
+                <h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5>
+              </div>
+
+              <button v-if="!todo.completed" @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem">
+                <h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5>
+              </button>
+              <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style">
+                <h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5>
+              </button>
+              <button v-if="todo.isFavorite" @click="removeFromFavorites(todo)" class="button-no-style">
+                <h5 style="margin-right: 0;"><i class="bi bi-star-fill"></i></h5>
+              </button>
+            </div>
+          </div>
+
+          <div class="inline-flex-container" style="width: 100%; height: 1.3rem;">
+            <p style="width: 25%;" :class="todo.completed == true ? 'done' : 'open'">{{ todo.completed == true ? 'Finished!'
+              : 'Open' }}</p>
+            <p v-if="!todo.open && edit_todo_id != todo.id">
+              {{ descriptionToShow(todo) }}</p>
+            <button v-if="!todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="editDescription(todo)">
+              <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
+            </button>
+            <button v-if="!todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
+              <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
+            </button>
+          </div>
+
+          <input v-if="edit_todo_id == todo.id" v-model="edited_description" v-on:keyup.enter="saveDescription(todo)"
+              ref="edit_description_input" class="form-control" style="width: 100%;">
+
+          <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
+
+            <p v-if="edit_todo_id != todo.id"> {{ todo.description }}</p>
+
+            <button v-if="todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="editDescription(todo)">
+              <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
+            </button>
+
+            <button v-if="edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
+              <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
+            </button>
+          </div>
+
+          <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
+            <h6 style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
+            <div class="align-right">
+              <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob"
+                style="border: none;" @click="toggle_todo_state(todo.id);">
+                <h3 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h3>
+                <h3 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h3>
+              </button>
+              <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob" style="border: none;"
+               @click="remove_todo(todo.id);"><h5><i class="bi bi-trash3"></i></h5></button>
+              <button v-else class="btn btn-sm m-2 m-mob" style="border-color: var(--color-text); color: var(--color-text);"
+               @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i>{{ " Remove" }}</button>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
-  </div>
-</template>
+</div></template>
 
 <style scoped>
 .done {

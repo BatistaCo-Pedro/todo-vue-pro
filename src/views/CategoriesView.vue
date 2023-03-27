@@ -32,7 +32,7 @@ export default {
 <template>
 <div class="manage_category">
 	
-	<h1>Manage Categories</h1>
+	<h1 style="margin-top: 2rem">Manage Categories</h1>
 
 	<ul class="list-group" v-for="category in categories" v-bind:key="category.id">
 		<CategoryList
@@ -53,7 +53,6 @@ export default {
 		autocomplete="off"
 		placeholder="Neue Kategorie hinzufügen"/>
 	</div>
-	
 
 </div>
 </template>

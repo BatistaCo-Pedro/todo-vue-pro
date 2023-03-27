@@ -10,27 +10,27 @@ export default {
 
   components: {
     TodoList,
-    AddTodoDashboard
+    AddTodoDashboard,
   },
 
   computed: {
-    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters", 
+    ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters",
       "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash"]),
     ...mapWritableState(useCategoryStore, ['category_names']),
   },
-  
+
   methods: {
-   ...mapActions(useTodoStore, ['toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo", 
-   "cloneTodo", "sortTodos"]),
+    ...mapActions(useTodoStore, ['toggleTodo', "editTodo", "saveTodo", "addTodo", "removeTodo",
+      "cloneTodo", "sortTodos"]),
 
     showDash() {
-      this.show_dash = true; 
-      this.show_add_button= false;
-    }, 
+      this.show_dash = true;
+      this.show_add_button = false;
+    },
 
     closeDash() {
-      this.show_dash = false; 
-      this.show_add_button = true; 
+      this.show_dash = false;
+      this.show_add_button = true;
     },
 
     submitTodo(new_Todo, new_description, new_category_id, new_priority) {
@@ -38,15 +38,15 @@ export default {
     },
 
     whatFilter(index) {
-      if(index == 1) return "Priority"
-      if(index == 2) return "Category"
+      if (index == 1) return "Priority"
+      if (index == 2) return "Category"
       return "Name"
     },
   },
-  
+
   watch: {
     new_category(value) {
-      if(value === null || value == "" || value == undefined) {
+      if (value === null || value == "" || value == undefined) {
         this.new_category = "No Category Given";
         return;
       }
@@ -55,7 +55,7 @@ export default {
 
     //make sure to show all todos when not searching again
     search_bar_input() {
-      if(this.search_bar_input == "") { this.is_searching = false }
+      if (this.search_bar_input == "") { this.is_searching = false }
       else { this.is_searching = true }
     },
   },
@@ -64,34 +64,42 @@ export default {
 
 
 <template>
-  <main>
+  <main style="margin-bottom: 5rem;">
 
-    <h1>TODO's</h1>
+    <h1 style="margin-top: 2rem">TODO's</h1>
 
     <!-- Tab navigatioon -->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
 
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="open-todos-tab" data-bs-toggle="tab" data-bs-target="#open-todos" type="button" role="tab" @click="show_add_button = true">Open ({{ todos_open != undefined ? todos_open.length : 0 }})</button>
+      <li class="nav-item adaptMobileNavItem" role="presentation">
+        <button class="nav-link active" id="open-todos-tab" data-bs-toggle="tab" data-bs-target="#open-todos"
+          type="button" role="tab" @click="show_add_button = true">Open ({{ todos_open != undefined ? todos_open.length : 0 }})</button>
       </li>
 
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="closed-todos-tab" data-bs-toggle="tab" data-bs-target="#closed-todos" type="button" role="tab" @click="show_add_button = false">Completed ({{ todos_completed != undefined ? todos_completed.length : 0 }})</button>
+      <li class="nav-item adaptMobileNavItem" role="presentation">
+        <button class="nav-link" id="closed-todos-tab" data-bs-toggle="tab" data-bs-target="#closed-todos" type="button"
+          role="tab" @click="show_add_button = false">Completed ({{ todos_completed != undefined ? todos_completed.length
+            : 0 }})</button>
       </li>
-      
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="favorite-todos-tab" data-bs-toggle="tab" data-bs-target="#favorite-todos" type="button" role="tab" @click="show_add_button = false">Favorites ({{ favorite_todos != undefined ? favorite_todos.length : 0 }})</button>
+
+      <li class="nav-item adaptMobileNavItem" role="presentation">
+        <button class="nav-link" id="favorite-todos-tab" data-bs-toggle="tab" data-bs-target="#favorite-todos"
+          type="button" role="tab" @click="show_add_button = false">Favorites ({{ favorite_todos != undefined ?
+            favorite_todos.length : 0 }})</button>
       </li>
 
     </ul>
 
     <!-- searchbar -->
     <div class="searchbar" style="display: inline-flex;  width: 100%;">
-      <input style="width: 100%;" class="search-input" type="text" v-model="search_bar_input" placeholder="Search Todos" />
-      <button @click="show_filter_dash = !show_filter_dash" class="button-no-style" style="margin: 0 1rem;"><h3 style="margin: 0;"><i class="bi bi-funnel"></i></h3></button>
+      <input style="width: 100%;" class="search-input" type="text" v-model="search_bar_input"
+        placeholder="Search Todos" />
+      <button @click="show_filter_dash = !show_filter_dash" class="button-no-style" style="margin: 0 1rem;">
+        <h3 style="margin: 0;"><i class="bi bi-funnel"></i></h3>
+      </button>
     </div>
     <div class="item error" v-if="search_bar_input && todos_open.length < 1">
-        <p>No results found!</p>
+      <p>No results found!</p>
     </div>
 
     <!-- Filter Tab-->
@@ -100,10 +108,10 @@ export default {
         <div v-for="(filter, index) in filters">
           <h6 style="margin: 0rem 1rem" class="adaptMobileSize">{{ whatFilter(index) }}
             <button v-if="!filter" @click="sortTodos(index)" class="button-no-style">
-            <i class="bi bi-caret-right-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
+              <i class="bi bi-caret-right-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
             </button>
             <button v-if="filter" @click="sortTodos(index)" class="button-no-style">
-            <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
+              <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 0.2rem;"></i>
             </button>
           </h6>
         </div>
@@ -114,29 +122,25 @@ export default {
     <div class="tab-content" id="todos">
 
       <div class="tab-pane fade show active" id="open-todos" role="tabpanel">
-        <TodoList :todos="todos_open"
-        @toggle-todo-state="toggleTodo" 
-        @save-todo="saveTodo"
-        @remove-todo="removeTodo"
-        @clone-todo="cloneTodo"/>
+        <TodoList :todos="todos_open" @toggle-todo-state="toggleTodo" @save-todo="saveTodo" @remove-todo="removeTodo"
+          @clone-todo="cloneTodo" />
       </div>
 
       <div class="tab-pane fade" id="closed-todos" role="tabpanel">
-        <TodoList :todos="todos_completed" 
-        @toggle-todo-state="toggleTodo" 
-        @save-todo="saveTodo"
-        @remove-todo="removeTodo"/>
+        <TodoList :todos="todos_completed" @toggle-todo-state="toggleTodo" @save-todo="saveTodo"
+          @remove-todo="removeTodo" />
       </div>
 
       <div class="tab-pane fade" id="favorite-todos" role="tabpanel">
-        <TodoList :todos="favorite_todos" 
-        @toggle-todo-state="toggleTodo" 
-        @save-todo="saveTodo"
-        @remove-todo="removeTodo"/>
+        <TodoList :todos="favorite_todos" @toggle-todo-state="toggleTodo" @save-todo="saveTodo"
+          @remove-todo="removeTodo" />
       </div>
     </div>
 
-    <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" @click="showDash()">Add Todo</button>
+    <!-- Add Todo -->
+    <div style="justify-content: center; display: flex;">
+      <button v-if="show_add_button" class="btn btn-sm btn-outline-secondary margins" style="width: 25%; padding: 0.5rem;" @click="showDash()">Add Todo</button>
+    </div>
     <div v-if="show_dash" style="margin: 0.5rem 0.25rem 0.05rem 0; display: flex; justify-content: flex-end;">
       <h3><button class="button-no-style" @click="closeDash"><i class="bi bi-x-lg"></i></button></h3>
     </div>
@@ -149,7 +153,6 @@ export default {
 </template>
 
 <style scoped>
-
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 li {
@@ -200,6 +203,10 @@ li {
 @media (max-width: 900px) {
   .adaptMobileSize {
     font-size: 0.9rem
+  }
+
+  .adaptMobileNavItem {
+    font-size: 0.8rem;
   }
 }
 </style>
