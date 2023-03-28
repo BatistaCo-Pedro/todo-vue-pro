@@ -1,17 +1,21 @@
 <script>
 
 import VueMultiselect from 'vue-multiselect'
+import { useTextareaAutosize } from '@vueuse/core'
 
 export default {
   name: 'TodoList',
+
+  setup() {
+    const { textarea } = useTextareaAutosize()
+  },
 
   data() {
     return {
       screenWidth: 0,
       descriptionOpen: false,
-      edited_description: "",
-      edit_todo_id: -1,
-      ajustedSize: 10
+      inputHeight: 0,
+      descriptionValue: "",
     }
 
   },
@@ -53,22 +57,8 @@ export default {
     },
 
     showDescription(todo) {
+      this.descriptionValue = todo.description
       todo.open = !todo.open;
-    },
-
-    editDescription(todo) {
-      this.edit_todo_id = todo.id;
-      this.edited_description = todo.description;
-
-      this.$nextTick(() => {
-        this.$refs.edit_description_input.focus()
-      })
-    },
-
-    saveDescription(todo) {
-      todo.description = this.edited_description;
-      this.edit_todo_id = -1;
-      todo.open = false
     },
 
     onScreenResize() {
@@ -87,15 +77,15 @@ export default {
       return todo.description
     },
 
-    resize() {
-      let element;
-      this.$nextTick(() => {
-        element = this.$refs["textarea"];
-      })
-      element.style.height = "70px"
-      element.style.height = element.scrollHeight + "px"
+    adaptDescription(el) {
+      console.log("el")
+      this.descriptionValue = el.target.innerText
+    },
 
-    }
+    adaptTodoDescription(todo) {
+      console.log(todo)
+      todo.description = this.descriptionValue
+    },
   },
 
   mounted() {
@@ -174,10 +164,11 @@ export default {
 
           <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
 
-            <textarea class="textarea-no-style theme" 
-              style="width: 80%;" v-model="todo.description"
-              @input="resize()" ref="textarea">
-            </textarea>
+            <p class="theme" style="width: 80%;" contenteditable 
+            @input="adaptDescription" :on-keyup="adaptTodoDescription(todo)"
+            ref="description"> 
+              {{ todo.description }} 
+            </p>
 
             <button v-if="edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
               <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
@@ -240,9 +231,7 @@ export default {
   outline: none;
   padding: 0;
   box-shadow: none;
-  height: 100%;
-  min-height: 60px;
-  overflow-y: auto;
+  height: 0;
   word-wrap: break-word
 }
 
