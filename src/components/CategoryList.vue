@@ -21,11 +21,11 @@
 
 				<a 
 				class="btn btn-xs float-end" 
-				@click="removeCategory(id)"><i class="bi bi-trash3"></i></a>
+				@click="editCategory(id)"><i class="bi bi-pencil-square"></i></a>
 
 				<a 
 				class="btn btn-xs float-end" 
-				@click="editCategory(id)"><i class="bi bi-pencil-square"></i></a>
+				@click="removeCategory(id)"><i class="bi bi-trash3"></i></a>
 
 			</div>
 
@@ -105,5 +105,6 @@ export default {
 	display: inline-flex;
 	align-content: center;
 	flex-wrap: nowrap;
+	justify-content: flex-end;
 }
 </style>

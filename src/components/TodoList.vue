@@ -11,7 +11,9 @@ export default {
       descriptionOpen: false,
       edited_description: "",
       edit_todo_id: -1,
+      ajustedSize: 10
     }
+
   },
 
 	props: {
@@ -84,6 +86,16 @@ export default {
       if(todo.description.length > 60) return todo.description.substring(0, 60) + "..."
       return todo.description
     },
+
+    resize() {
+      let element;
+      this.$nextTick(() => {
+        element = this.$refs["textarea"];
+      })
+      element.style.height = "70px"
+      element.style.height = element.scrollHeight + "px"
+
+    }
   },
 
   mounted() {
@@ -108,8 +120,13 @@ export default {
       <ul class="list-group" style="width: 100%;">
 
         <li class="list-group-item theme" style="margin: 0.5rem 0 0 0; width: 100%;">
+
+          <!-- Top third of the todo -->
           <div class="inline-flex-container-space">
+
             <h3>{{ todo.name }}</h3>
+
+            <!-- Priorities -->
             <div class="inline-flex-container">
               <div v-if="todo.priority == 'Low'" class="priorities">
                 <h5 style="color: green;"><i class="bi bi-4-circle-fill"></i></h5>
@@ -124,9 +141,12 @@ export default {
                 <h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5>
               </div>
 
+              <!-- Copy Button -->
               <button v-if="!todo.completed" @click="clone_todo(todo)" class="button-no-style" style="margin-right: 1rem">
                 <h5 style="margin-right: 0;"><i class="bi bi-clipboard-plus"></i></h5>
               </button>
+
+              <!-- Favorite -->
               <button v-if="todo.isFavorite == false" @click="addToFavorites(todo)" class="button-no-style">
                 <h5 style="margin-right: 0;"><i class="bi bi-star"></i></h5>
               </button>
@@ -136,29 +156,28 @@ export default {
             </div>
           </div>
 
+          <!-- Second part of the todo-->
           <div class="inline-flex-container" style="width: 100%; height: 1.3rem;">
-            <p style="width: 25%;" :class="todo.completed == true ? 'done' : 'open'">{{ todo.completed == true ? 'Finished!'
-              : 'Open' }}</p>
-            <p v-if="!todo.open && edit_todo_id != todo.id">
-              {{ descriptionToShow(todo) }}</p>
-            <button v-if="!todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="editDescription(todo)">
-              <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
-            </button>
-            <button v-if="!todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
+
+            <!-- Completion status -->
+            <p style="width: 25%;" :class="todo.completed == true ? 'done' : 'open'">{{ todo.completed == true ? 'Finished!' : 'Open' }}</p>
+
+            <!-- Description -->
+            <input class="input-no-style theme" v-if="!todo.open && todo.description.length < 60" 
+            v-model="todo.description" :on-change="ajustSize"
+            style="width: 75%;">
+            <p style="width: ;" v-else v-if="!todo.open">{{ descriptionToShow(todo) }}</p>
+            <button v-if="!todo.open && todo.description.length > 60" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
               <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
             </button>
           </div>
 
-          <input v-if="edit_todo_id == todo.id" v-model="edited_description" v-on:keyup.enter="saveDescription(todo)"
-              ref="edit_description_input" class="form-control" style="width: 100%;">
-
           <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
 
-            <p v-if="edit_todo_id != todo.id"> {{ todo.description }}</p>
-
-            <button v-if="todo.open && edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="editDescription(todo)">
-              <i class="bi bi-pencil" style="align-self:self-start; margin-left: 1rem;"></i>
-            </button>
+            <textarea class="textarea-no-style theme" 
+              style="width: 80%;" v-model="todo.description"
+              @input="resize()" ref="textarea">
+            </textarea>
 
             <button v-if="edit_todo_id != todo.id" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
               <i class="bi bi-caret-up-fill" style="align-self:self-start; margin-left: 1rem;"></i>
@@ -206,6 +225,33 @@ export default {
   width: 100%;
   display: inline-flex;
   justify-content: space-between;
+}
+
+.input-no-style {
+  border: none;
+  color: var(--color-text);
+}
+
+.textarea-no-style {
+  border: none;
+  color: var(--color-text);
+  resize: none;
+  overflow: hidden;
+  outline: none;
+  padding: 0;
+  box-shadow: none;
+  height: 100%;
+  min-height: 60px;
+  overflow-y: auto;
+  word-wrap: break-word
+}
+
+textarea:focus {
+  outline: none;
+}
+
+input:focus {
+  outline: none;
 }
 
 .align-right {
