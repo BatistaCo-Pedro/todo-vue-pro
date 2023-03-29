@@ -11,6 +11,7 @@ function filterTodos(state, todo) {
 
 //#region ----------------- Filtering ----------------------
 
+//map prioritie string to a 
 function mapTodoPriorities(todoA, todoB) {
   let todos = [todoA, todoB]
   todos.map(todo => {
@@ -44,6 +45,7 @@ function sortTodosAfterCategory(state) {
   })
 }
 
+//switch to know what filter
 function sorting(state) {
   if (state.isSortingPriority) {
     sortTodosAfterPriority(state)
@@ -92,7 +94,6 @@ export const useTodoStore = defineStore('todo', {
         open: false,
       }
     ],
-    current_todo: Object
   }),
 
   persist: true,
@@ -107,22 +108,26 @@ export const useTodoStore = defineStore('todo', {
     //favorite todos with search and filter methods
     favorite_todos: (state) => {
       if (!state.todos) return
-      //filter todos on search
+
+      //filter todos 
+      sorting(state)
+
+      //search todos
       if (state.is_searching) {
         return state.todos.filter(todo => {
           return todo.isFavorite && filterTodos(state, todo)
         })
       }
 
-      sorting(state)
-
-      //if not sorting
+      //if not filtering, order by id
       if (state.filters.every(el => el == false)) {
         state.todos.sort((todoA, todoB) => {
           return todoA.id - todoB.id
         })
       }
 
+      //show only favorites
+      //only here do we return out of the function
       return state.todos.filter(todo => {
         return todo.isFavorite
       })
@@ -132,21 +137,25 @@ export const useTodoStore = defineStore('todo', {
     todos_completed: (state) => {
       if (!state.todos) return
 
+      //filter todos 
+      sorting(state)
+
+      //search todos
       if (state.is_searching) {
         return state.todos.filter(todo => {
           return todo.completed && filterTodos(state, todo)
         })
       }
 
-      sorting(state)
-
-      //if not sorting
+      //if not filtering, order by id
       if (state.filters.every(el => el == false)) {
         state.todos.sort((todoA, todoB) => {
           return todoA.id - todoB.id
         })
       }
 
+      //show only completed
+      //only here do we return out of the function
       return state.todos.filter(todo => {
         return todo.completed == true
       });
@@ -156,21 +165,25 @@ export const useTodoStore = defineStore('todo', {
     todos_open: (state) => {
       if (!state.todos) return
 
+      //filter todos 
       sorting(state)
 
-      //if not sorting
+      //search todos
+      if (state.is_searching) {
+        return state.todos.filter(todo => {
+          return todo.completed == false && filterTodos(state, todo)
+        })
+      }
+
+      //if not filtering, order by id
       if (state.filters.every(el => el == false)) {
         state.todos.sort((todoA, todoB) => {
           return todoA.id - todoB.id
         })
       }
 
-      //filter todos on search
-      if (state.is_searching) {
-        return state.todos.filter(todo => {
-          return todo.completed == false && filterTodos(state, todo)
-        })
-      }
+      //show only open
+      //only here do we return out of the function
       return state.todos.filter(todo => {
         return todo.completed == false
       });
@@ -179,6 +192,8 @@ export const useTodoStore = defineStore('todo', {
 
   actions: {
 
+    //used in TodoView.vue for the v-for for the filter
+    //switch to activate/deactivate the filter and deactivating all the other ones
     sortTodos(index) {
       if (index == 0) {
         this.isSortingName = !this.isSortingName
@@ -212,9 +227,8 @@ export const useTodoStore = defineStore('todo', {
     addTodo(new_Todo, new_description, new_category_id, new_prority) {
       let new_id;
       let new_category;
+      //getting category store to connect category ids to the todos
       const catStore = useCategoryStore()
-
-      console.log(`new todo: ${new_Todo} - ${new_description} - ${new_category_id}!`)
 
       //assign new id
       if (this.todos.length) {
@@ -223,7 +237,7 @@ export const useTodoStore = defineStore('todo', {
       else {
         new_id = 1;
       }
-      console.log(new_category_id)
+
       //Category Validation as it's not required to give a category
       if (new_category_id == -1) {
         new_category = "No Category"
@@ -232,9 +246,9 @@ export const useTodoStore = defineStore('todo', {
         new_category = catStore.categories.find(category => {
           return category.id == new_category_id
         }).name
-        console.log(new_category)
       }
 
+      //push new todo to the todos list
       this.todos.push({
         id: new_id,
         name: new_Todo,
@@ -253,16 +267,16 @@ export const useTodoStore = defineStore('todo', {
     },
 
     removeTodo(id) {
-      console.log("removing todo")
       this.todos = this.todos.filter(todo => {
         return todo.id != id;
       });
     },
 
     cloneTodo(todoData) {
-      console.log("cloning todo: " + todoData.id)
+      //assign new id
       let newCloneId = (this.todos.slice(-1)[0].id) + 1;
 
+      //push new todo exactly as the given parameter todo except for the id
       this.todos.push(
         {
           id: newCloneId,
@@ -303,7 +317,7 @@ export const useCategoryStore = defineStore('category', {
     category_names: (state) => {
       let categoryNames = []
       if (state.categories) {
-        state.categories.map(category => {
+        return state.categories.map(category => {
           categoryNames.push(category.name)
         })
       }
@@ -324,6 +338,7 @@ export const useCategoryStore = defineStore('category', {
         new_id = 1;
       }
 
+      //pushing new category
       this.categories.push(
         {
           id: new_id,
@@ -333,18 +348,24 @@ export const useCategoryStore = defineStore('category', {
     },
 
     saveCategory(data) {
+      //to sync to todos
       const todosStore = useTodoStore()
 
+      //change category
       this.categories = this.categories.filter(category => {
         if (category.id == data.id) {
+          //edit category values
           category.id = data.id
           category.name = data.new_name;
 
+          //get todos using this category
           let todos_to_change = todosStore.todos.filter(todo => {
             return todo.categoryId == category.id
           })
 
+          //if there are todos using this category change it's name to match the edited name
           if (todos_to_change != null) {
+            //go thorugh all of the todos and change the category
             todos_to_change.map(todo => {
               todo.category = category.name
             })
@@ -358,19 +379,24 @@ export const useCategoryStore = defineStore('category', {
     removeCategory(id) {
       const todosStore = useTodoStore()
 
+      //remove categories that match the id
       this.categories = this.categories.filter(category => {
         return category.id != id;
       });
 
-      let todo_to_change = todosStore.todos.find(todo => {
+      //find todo co
+      let todos_to_change = todosStore.todos.filter(todo => {
         return todo.categoryId == id
       })
 
-      if (todo_to_change != null) {
-        todo_to_change.category = "No category"
-        todo_to_change.categoryId = 0
+      if (todos_to_change != null) {
+        //go thorugh all of the todos and change the category to "No Category"
+        todos_to_change.map(todo => {
+          todo.category = "No Category"
+          //adapt catagory id to make sure data is consistent
+          todos_to_change.categoryId = -1
+        })
       }
-
     }
   },
 })
