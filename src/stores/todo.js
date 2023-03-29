@@ -340,13 +340,14 @@ export const useCategoryStore = defineStore('category', {
           category.id = data.id
           category.name = data.new_name;
 
-          let todo_to_change = todosStore.todos.map(todo => {
-            if(todo.categoryId == category.id) 
-              return todo
+          let todos_to_change = todosStore.todos.filter(todo => {
+            return todo.categoryId == category.id
           })
 
-          if (todo_to_change != null) {
-            todo_to_change.category = category.name
+          if (todos_to_change != null) {
+            todos_to_change.map(todo => {
+              todo.category = category.name
+            })
           }
         }
         return category;

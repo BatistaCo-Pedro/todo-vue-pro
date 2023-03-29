@@ -179,9 +179,8 @@ export default {
             <p style="width: 25%;" :class="todo.completed == true ? 'done' : 'open'">{{ todo.completed == true ? 'Finished!' : 'Open' }}</p>
 
             <!-- Description -->
-            <input class="input-no-style theme" v-if="!todo.open && todo.description.length < 60" 
-            v-model="todo.description" @change="ajustSize"
-            style="width: 35%;">
+            <input class="input-no-style theme input-width" v-if="!todo.open && todo.description.length < 60" 
+            v-model="todo.description" @change="ajustSize">
             <p v-else v-if="!todo.open">{{ descriptionToShow(todo) }}</p>
             <button v-if="!todo.open && todo.description.length > 60" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
               <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
@@ -205,15 +204,24 @@ export default {
            <!-- Third part of the todo -->
           <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
 
-            <div class="inline-flex-container" style="width: 15%;">
-              <h6 v-if="editTodoId != todo.id" style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
-              <select v-if="editingCategory && editTodoId == todo.id" style="outline: none; border: none; font-weight: 600;" class="theme" v-model="todo.category">
+            <div class="inline-flex-container" style="width: 50%;">
+
+              <!-- show description differnetly depending on length -->
+              <h6 v-if="editTodoId != todo.id" style="align-self: center; margin: 0;">{{ todo.category }}</h6>
+
+              <!-- editing category selection -->
+              <select v-if="editingCategory && editTodoId == todo.id" 
+                style="outline: none; border: none; font-weight: 600;" class="theme" v-model="todo.category">
                 <option v-for="category in categories" :value="category.name"> {{ category.name }}</option>
               </select>
+
+              <!-- pencil for editing -->
               <button v-if="!editingCategory" class="button-no-style" 
                 @click="editingCategory = !editingCategory; editTodoId = todo.id">
-                <p style="margin: 0;"><i class="bi bi-pencil"></i></p>
+                <p style="margin: 0 0 0 0.5rem"><i class="bi bi-pencil"></i></p>
               </button>
+
+              <!-- confirm todo category change -->
               <button v-if="editingCategory && editTodoId == todo.id" class="button-no-style" 
                 style="margin-left: 0.5rem;" 
                 @click="adaptTodoCategory(todo)">
@@ -222,6 +230,7 @@ export default {
             </div>
 
             <div class="align-right">
+              <!-- completion and remove button on mobile -->
               <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob"
                 style="border: none;" @click="toggle_todo_state(todo.id);">
                 <h3 style="margin: 0;"><i v-if="todo.completed == false" class="bi bi-check2"></i></h3>
@@ -288,7 +297,7 @@ input:focus {
 }
 
 .align-right {
-  width: 85%;
+  width: 50%;
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -300,6 +309,10 @@ input:focus {
   flex-wrap: wrap;
   align-content: center;
   margin: 0 0.5rem 0 0;
+}
+
+.input-width {
+  width: 35%;
 }
 
 @media (max-width: 900px) {
@@ -317,5 +330,13 @@ input:focus {
   .priorities {
     margin: 0.125rem 1rem 0 0!important
   }
+
+  .check-button-container {
+    margin: 0;
+  }
+
+  .input-width {
+  width: 65%;
+}
 }
 </style>
