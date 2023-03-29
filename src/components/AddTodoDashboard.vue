@@ -106,8 +106,13 @@ export default {
         </div>
       </div>
 
-      <VueMultiselect v-model="new_category" :options="category_names" :searchable="true" :close-on-select="true"
-        :show-labels="false" placeholder="Pick a value"></VueMultiselect>
+      <VueMultiselect v-model="new_category" 
+        :options="category_names" 
+        :searchable="true" 
+        :close-on-select="true"
+        :show-labels="false" 
+        placeholder="Pick a value">
+      </VueMultiselect>
 
       <button class="btn btn-sm btn-outline-secondary" style="width: 15%; margin-top: 1rem; color: var(--color-text);"
         type="submit">

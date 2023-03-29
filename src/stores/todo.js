@@ -1,5 +1,16 @@
 import { defineStore } from 'pinia'
 
+//----------------------- Search ---------------------------
+function filterTodos(state, todo) {
+  return todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
+    || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase())
+}
+
+//----------------------------------------------------------
+
+
+//#region ----------------- Filtering ----------------------
+
 function mapTodoPriorities(todoA, todoB) {
   let todos = [todoA, todoB]
   todos.map(todo => {
@@ -13,13 +24,6 @@ function mapTodoPriorities(todoA, todoB) {
       todo.priorityNr = 4
   })
 }
-
-function filterTodos(state, todo) {
-  return todo.name.toLowerCase().includes(state.search_bar_input.toLowerCase())
-    || todo.description.toLowerCase().includes(state.search_bar_input.toLowerCase())
-}
-
-//#region ----------------- Filtering ----------------------
 
 function sortTodosAfterName(state) {
   state.todos.sort((todoA, todoB) => {
@@ -60,7 +64,11 @@ export const useTodoStore = defineStore('todo', {
 
   state: () => ({
     show_add_button: true,
+    
+    //add-button dashboard
     show_dash: false,
+    
+    //filters
     show_filter_dash: false,
     isSortingName: false,
     isSortingPriority: false,
@@ -91,16 +99,12 @@ export const useTodoStore = defineStore('todo', {
 
   getters: {
 
+    //retur an array with the filter variables to loop thorugh in TodoView
     filters: (state) => {
       return [state.isSortingName, state.isSortingPriority, state.isSortingCategory]
     },
 
-    todoCategory: (state) => {
-      return state.todos.map(todo => {
-        return todo.category
-      })
-    },
-
+    //favorite todos with search and filter methods
     favorite_todos: (state) => {
       if (!state.todos) return
       //filter todos on search
@@ -124,6 +128,7 @@ export const useTodoStore = defineStore('todo', {
       })
     },
 
+    //finished todos with search and filter methods
     todos_completed: (state) => {
       if (!state.todos) return
 
@@ -147,6 +152,7 @@ export const useTodoStore = defineStore('todo', {
       });
     },
 
+    //open todos with search and filter methods
     todos_open: (state) => {
       if (!state.todos) return
 

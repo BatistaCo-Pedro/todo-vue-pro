@@ -1,14 +1,13 @@
 <script>
 
 import VueMultiselect from 'vue-multiselect'
-import { useTextareaAutosize } from '@vueuse/core'
+
+import { mapWritableState } from 'pinia'
+import { useCategoryStore } from '@/stores/todo'
 
 export default {
   name: 'TodoList',
 
-  setup() {
-    const { textarea } = useTextareaAutosize()
-  },
 
   data() {
     return {
@@ -16,6 +15,10 @@ export default {
       descriptionOpen: false,
       inputHeight: 0,
       descriptionValue: "",
+      editingName: false,
+      nameValue: "",
+      editingCategory: false,
+      editTodoId: -1
     }
 
   },
@@ -82,10 +85,22 @@ export default {
       this.descriptionValue = el.target.innerText
     },
 
+    adaptName(el) {
+      this.nameValue = el.target.innerText
+    },
+
     adaptTodoDescription(todo) {
       console.log(todo)
       todo.description = this.descriptionValue
     },
+
+    adaptTodoName(todo) {
+      todo.name = this.nameValue
+    }
+  },
+
+  computed: {
+    ...mapWritableState(useCategoryStore, ["categories"])
   },
 
   mounted() {
@@ -114,7 +129,10 @@ export default {
           <!-- Top third of the todo -->
           <div class="inline-flex-container-space">
 
-            <h3>{{ todo.name }}</h3>
+            <div class="inline-flex-container">
+              <h3 contenteditable @input="adaptName" @keyup="adaptTodoName(todo)" 
+              @load="nameValue = todo.name"> {{ todo.name }}</h3>
+            </div>
 
             <!-- Priorities -->
             <div class="inline-flex-container">
@@ -154,18 +172,19 @@ export default {
 
             <!-- Description -->
             <input class="input-no-style theme" v-if="!todo.open && todo.description.length < 60" 
-            v-model="todo.description" :on-change="ajustSize"
-            style="width: 75%;">
-            <p style="width: ;" v-else v-if="!todo.open">{{ descriptionToShow(todo) }}</p>
+            v-model="todo.description" @change="ajustSize"
+            style="width: 35%;">
+            <p v-else v-if="!todo.open">{{ descriptionToShow(todo) }}</p>
             <button v-if="!todo.open && todo.description.length > 60" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
               <i class="bi bi-caret-down-fill" style="align-self:self-start; margin-left: 1rem;"></i>
             </button>
           </div>
 
+          <!-- Todo open -->
           <div v-if="todo.open" class="inline-flex-container" style="width: 100%;">
 
             <p class="theme" style="width: 80%;" contenteditable 
-            @input="adaptDescription" :on-keyup="adaptTodoDescription(todo)"
+            @input="adaptDescription" @keyup="adaptTodoDescription(todo)"
             ref="description"> 
               {{ todo.description }} 
             </p>
@@ -175,8 +194,25 @@ export default {
             </button>
           </div>
 
+           <!-- Third part of the todo -->
           <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
-            <h6 style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
+
+            <div class="inline-flex-container" style="width: 15%;">
+              <h6 v-if="!editingCategory" style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
+              <select v-if="editingCategory" style="outline: none; border: none; font-weight: 600;" class="theme" v-model="todo.category">
+                <option v-for="category in categories" :value="category.name"> {{ category.name }}</option>
+              </select>
+              <button v-if="!editingCategory" class="button-no-style" 
+                @click="editingCategory = !editingCategory; editTodoId = todo.id">
+                <p style="margin: 0;"><i class="bi bi-pencil"></i></p>
+              </button>
+              <button v-if="editingCategory && editTodoId == todo.id" class="button-no-style" 
+                style="margin-left: 0.5rem;" 
+                @click="editingCategory = !editingCategory">
+                <h4 style="margin: 0;"><i class="bi bi-check2"></i></h4>
+              </button>
+            </div>
+
             <div class="align-right">
               <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob"
                 style="border: none;" @click="toggle_todo_state(todo.id);">
@@ -244,7 +280,7 @@ input:focus {
 }
 
 .align-right {
-  width: 82%;
+  width: 85%;
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
