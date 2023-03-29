@@ -317,7 +317,7 @@ export const useCategoryStore = defineStore('category', {
     category_names: (state) => {
       let categoryNames = []
       if (state.categories) {
-        return state.categories.map(category => {
+        state.categories.map(category => {
           categoryNames.push(category.name)
         })
       }

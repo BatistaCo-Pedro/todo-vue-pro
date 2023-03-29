@@ -82,7 +82,7 @@ export default {
       <br>
 
       <div>Priority: {{ new_priority }}</div>
-      <div style="display: inline-flex; width: 30%; justify-content: space-between; margin-bottom: 1rem;">
+      <div class="priority-width" style="display: inline-flex; justify-content: space-between; margin-bottom: 1rem;">
         <div>
           <input required type="radio" id="priorityLow" value="Low" v-model="new_priority" style="margin: 0 0.2rem;" />
           <label for="priorityLow">Low</label>
@@ -120,3 +120,15 @@ export default {
     </form>
   </div>
 </template>
+
+<style>
+  .priority-width {
+    width: 30%;
+  }
+
+  @media (max-width: 900px) {
+  .priority-width {
+    width: 100%;
+  }
+}
+</style>
