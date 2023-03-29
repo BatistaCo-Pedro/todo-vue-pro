@@ -340,8 +340,9 @@ export const useCategoryStore = defineStore('category', {
           category.id = data.id
           category.name = data.new_name;
 
-          let todo_to_change = todosStore.todos.find(todo => {
-            return todo.categoryId == category.id
+          let todo_to_change = todosStore.todos.map(todo => {
+            if(todo.categoryId == category.id) 
+              return todo
           })
 
           if (todo_to_change != null) {

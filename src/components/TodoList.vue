@@ -96,7 +96,15 @@ export default {
 
     adaptTodoName(todo) {
       todo.name = this.nameValue
-    }
+    },
+
+    adaptTodoCategory(todo) {
+      this.editingCategory = !this.editingCategory; 
+      this.editTodoId = -1
+      todo.categoryId = this.categories.find(cat => {
+        return cat.name == todo.category
+      }).id
+    },
   },
 
   computed: {
@@ -198,8 +206,8 @@ export default {
           <div class="inline-flex-container" style="width: 100%; height: 2.2rem;">
 
             <div class="inline-flex-container" style="width: 15%;">
-              <h6 v-if="!editingCategory" style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
-              <select v-if="editingCategory" style="outline: none; border: none; font-weight: 600;" class="theme" v-model="todo.category">
+              <h6 v-if="editTodoId != todo.id" style="align-self: center; margin: 0; width: 70%;">{{ todo.category }}</h6>
+              <select v-if="editingCategory && editTodoId == todo.id" style="outline: none; border: none; font-weight: 600;" class="theme" v-model="todo.category">
                 <option v-for="category in categories" :value="category.name"> {{ category.name }}</option>
               </select>
               <button v-if="!editingCategory" class="button-no-style" 
@@ -208,7 +216,7 @@ export default {
               </button>
               <button v-if="editingCategory && editTodoId == todo.id" class="button-no-style" 
                 style="margin-left: 0.5rem;" 
-                @click="editingCategory = !editingCategory">
+                @click="adaptTodoCategory(todo)">
                 <h4 style="margin: 0;"><i class="bi bi-check2"></i></h4>
               </button>
             </div>
@@ -220,9 +228,9 @@ export default {
                 <h3 style="margin: 0;"><i v-if="todo.completed" class="bi bi-x-lg"></i></h3>
               </button>
               <button v-if="screenWidth < 900" class="btn btn-sm m-2 m-mob" style="border: none;"
-               @click="remove_todo(todo.id);"><h5><i class="bi bi-trash3"></i></h5></button>
+                @click="remove_todo(todo.id);"><h5><i class="bi bi-trash3"></i></h5></button>
               <button v-else class="btn btn-sm m-2 m-mob" style="border-color: var(--color-text); color: var(--color-text);"
-               @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i>{{ " Remove" }}</button>
+                @click="remove_todo(todo.id);"><i class="bi bi-trash3"></i>{{ " Remove" }}</button>
           </div>
         </div>
       </li>
