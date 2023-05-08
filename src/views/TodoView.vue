@@ -5,8 +5,15 @@ import { useTodoStore, useCategoryStore } from '@/stores/todo'
 
 import TodoList from '@/components/TodoList.vue'
 import AddTodoDashboard from '../components/AddTodoDashboard.vue'
+import axios from 'axios';
 
 export default {
+
+  data() {
+    return {
+      testData: "",
+    }
+  },
 
   components: {
     TodoList,
@@ -42,6 +49,22 @@ export default {
       if (index == 2) return "Category"
       return "Name"
     },
+
+    async getAll() {
+      this.testData = (await axios.get("http://localhost:8080/cars?key=P7Cy7yGwLo8RPFDzce4wuYqCGwWYmE")).data
+    },
+
+    async getById(id) {
+      let res = ""
+      res = (await axios.get(`http://localhost:8080/cars/${id}?key=P7Cy7yGwLo8RPFDzce4wuYqCGwWYmE`, {
+        validateStatus: function (status) {
+          return status < 500
+        }
+      })).data
+      console.log(res)
+      if(res.status == "404") this.testData = `ERROR: ID ${id} Not found`
+      else this.testData = res;
+    },
   },
 
   watch: {
@@ -59,6 +82,10 @@ export default {
       else { this.is_searching = true }
     },
   },
+
+  async mounted() {
+    await this.getById(1);
+  }
 }
 </script>
 
@@ -149,6 +176,9 @@ export default {
 
     <hr />
 
+    <br>
+    <br>
+    <p>{{ testData }}</p>
   </main>
 </template>
 

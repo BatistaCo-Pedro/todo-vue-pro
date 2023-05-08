@@ -33,7 +33,7 @@ export default {
       this.new_description = "";
       this.new_priority = ""
       this.categoryId = -1
-    }
+    },
   },
 
   watch: {
@@ -65,7 +65,8 @@ export default {
         console.log(this.new_categoryId)
       }
     },
-  }
+  },
+
 }
 </script>
 
