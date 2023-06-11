@@ -51,12 +51,12 @@ export default {
     },
 
     async getAll() {
-      this.testData = (await axios.get("http://localhost:8080/cars?key=P7Cy7yGwLo8RPFDzce4wuYqCGwWYmE")).data
+      this.testData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
     },
 
     async getById(id) {
       let res = ""
-      res = (await axios.get(`http://localhost:8080/cars/${id}?key=P7Cy7yGwLo8RPFDzce4wuYqCGwWYmE`, {
+      res = (await axios.get(`https://295.berufsbildung-test.ch/2023/pedro/public/api/todos/${id}?key=lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y`, {
         validateStatus: function (status) {
           return status < 500
         }
@@ -84,7 +84,7 @@ export default {
   },
 
   async mounted() {
-    await this.getById(1);
+    await this.getAll();
   }
 }
 </script>
