@@ -11,21 +11,6 @@ function filterTodos(state, todo) {
 
 //#region ----------------- Filtering ----------------------
 
-//map prioritie string to a 
-function mapTodoPriorities(todoA, todoB) {
-  let todos = [todoA, todoB]
-  todos.map(todo => {
-    if (todo.priority == "Highest")
-      todo.priorityNr = 1
-    if (todo.priority == "High")
-      todo.priorityNr = 2
-    if (todo.priority == "Medium")
-      todo.priorityNr = 3
-    if (todo.priority == "Low")
-      todo.priorityNr = 4
-  })
-}
-
 function sortTodosAfterName(state) {
   state.todos.sort((todoA, todoB) => {
     return todoA.name.localeCompare(todoB.name)
@@ -34,7 +19,6 @@ function sortTodosAfterName(state) {
 
 function sortTodosAfterPriority(state) {
   state.todos.sort((todoA, todoB) => {
-    mapTodoPriorities(todoA, todoB)
     return todoA.priorityNr - todoB.priorityNr
   });
 }
@@ -80,20 +64,7 @@ export const useTodoStore = defineStore('todo', {
     is_searching: false,
 
     search_bar_input: "",
-    todos: [
-      {
-        id: 1,
-        name: "test",
-        description: "This is a simple test!",
-        category: "No Category",
-        categoryId: 0,
-        completed: false,
-        isFavorite: false,
-        priority: "Low",
-        priorityNr: 0,
-        open: false,
-      }
-    ],
+    todos: [],
   }),
 
   persist: true,

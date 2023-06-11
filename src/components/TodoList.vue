@@ -144,16 +144,16 @@ export default {
 
             <!-- Priorities -->
             <div class="inline-flex-container">
-              <div v-if="todo.priority == 'Low'" class="priorities">
+              <div v-if="todo.priorityNr == 4" class="priorities">
                 <h5 style="color: green;"><i class="bi bi-4-circle-fill"></i></h5>
               </div>
-              <div v-if="todo.priority == 'Medium'" class="priorities">
+              <div v-if="todo.priorityNr == 3" class="priorities">
                 <h5 style="color: darkgoldenrod;"><i class="bi bi-3-circle-fill"></i></h5>
               </div>
-              <div v-if="todo.priority == 'High'" class="priorities">
+              <div v-if="todo.priorityNr == 2" class="priorities">
                 <h5 style="color: orangered;"><i class="bi bi-2-circle-fill"></i></h5>
               </div>
-              <div v-if="todo.priority == 'Highest'" class="priorities">
+              <div v-if="todo.priorityNr == 1" class="priorities">
                 <h5 style="color: red;"><i class="bi bi-1-circle-fill"></i></h5>
               </div>
 

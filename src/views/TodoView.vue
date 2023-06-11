@@ -51,7 +51,36 @@ export default {
     },
 
     async getAll() {
-      this.testData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
+      let todoData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
+      console.log(Object.entries(todoData))
+
+      let currentIds = []
+      for(let i = 0; i < this.todos.length; i++) {
+        currentIds.push(this.todos[i].id)
+      }
+      console.log(currentIds)
+
+      for(let i = 0; i < Object.keys(todoData).length; i++) {
+        let singleTodoData = Object.entries(todoData)[i]
+        let newData = singleTodoData[1]
+        let todoToPush = null
+
+        if(!currentIds.includes(newData.id)) {
+          todoToPush = {
+            id: newData.id,
+            name: newData.todo_name,
+            description: newData.todo_description,
+            categoryId: newData.categoryId,
+            priorityNr: newData.todo_priorityNr,
+            private: newData.private_todo,
+            open: false,
+            completed: false,
+            isFavorite: false,
+          }    
+          this.todos.push(todoToPush)
+        }
+      }
+      console.log(this.todos)
     },
 
     async getById(id) {
