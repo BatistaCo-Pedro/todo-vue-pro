@@ -22,8 +22,8 @@ export default {
 
   computed: {
     ...mapWritableState(useTodoStore, ['todos', 'todos_open', 'todos_completed', "favorite_todos", "filters",
-      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash"]),
-    ...mapWritableState(useCategoryStore, ['category_names']),
+      "show_add_button", "show_dash", "is_searching", "search_bar_input", "show_filter_dash", "mapTodoCategories"]),
+    ...mapWritableState(useCategoryStore, ['categories']),
   },
 
   methods: {
@@ -50,15 +50,15 @@ export default {
       return "Name"
     },
 
-    async getAll() {
-      let todoData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
-      console.log(Object.entries(todoData))
+    async getAllTodos() {
+      let todoData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", 
+      {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
 
       let currentIds = []
+      if(this.todos)
       for(let i = 0; i < this.todos.length; i++) {
         currentIds.push(this.todos[i].id)
       }
-      console.log(currentIds)
 
       for(let i = 0; i < Object.keys(todoData).length; i++) {
         let singleTodoData = Object.entries(todoData)[i]
@@ -80,7 +80,36 @@ export default {
           this.todos.push(todoToPush)
         }
       }
-      console.log(this.todos)
+    },
+
+    async getAllCategories() {
+      let categoryData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/categories", 
+      {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
+      console.log(Object.entries(categoryData))
+
+      let currentIds = []
+      for(let i = 0; i < this.categories.length; i++) {
+        currentIds.push(this.categories[i].id)
+      }
+      console.log(currentIds)
+
+      for(let i = 0; i < Object.keys(categoryData).length; i++) {
+        let singlecategoryData = Object.entries(categoryData)[i]
+        let newData = singlecategoryData[1]
+        let categoryToPush = null
+
+        if(!currentIds.includes(newData.id)) {
+          categoryToPush = {
+            id: newData.id,
+            name: newData.cat_name,
+          }    
+          this.categories.push(categoryToPush)
+        }
+      }
+      console.log(this.categories)
+      
+      this.mapTodoCategories(this.categories);
+
     },
 
     async getById(id) {
@@ -113,7 +142,8 @@ export default {
   },
 
   async mounted() {
-    await this.getAll();
+    await this.getAllTodos();
+    await this.getAllCategories();
   }
 }
 </script>

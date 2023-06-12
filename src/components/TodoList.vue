@@ -179,7 +179,7 @@ export default {
             <p style="width: 25%;" :class="todo.completed == true ? 'done' : 'open'">{{ todo.completed == true ? 'Finished!' : 'Open' }}</p>
 
             <!-- Description -->
-            <input class="input-no-style theme input-width" v-if="!todo.open && todo.description.length < 60" 
+            <input class="input-no-style theme input-width" v-if="!todo.ope && todo.description.length < 60" 
             v-model="todo.description" @change="ajustSize">
             <p v-else v-if="!todo.open">{{ descriptionToShow(todo) }}</p>
             <button v-if="!todo.open && todo.description.length > 60" class="button-no-style" style="display: flex;" @click="showDescription(todo)">
@@ -206,7 +206,7 @@ export default {
 
             <div class="inline-flex-container" style="width: 50%;">
 
-              <!-- show description differnetly depending on length -->
+              <!-- show todo category -->
               <h6 v-if="editTodoId != todo.id" style="align-self: center; margin: 0;">{{ todo.category }}</h6>
 
               <!-- editing category selection -->

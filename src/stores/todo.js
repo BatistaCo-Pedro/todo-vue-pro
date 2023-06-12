@@ -8,7 +8,6 @@ function filterTodos(state, todo) {
 
 //----------------------------------------------------------
 
-
 //#region ----------------- Filtering ----------------------
 
 function sortTodosAfterName(state) {
@@ -261,6 +260,17 @@ export const useTodoStore = defineStore('todo', {
           open: false,
         }
       );
+    },
+
+    mapTodoCategories(categories) {
+
+      this.todos.map(todo => {
+        for(let i = 0; i < categories.length; i++) {
+          if(todo.categoryId == categories[i].id) {
+            todo.category = categories[i].name
+          }
+        }
+      })
     }
   },
 })
@@ -269,16 +279,7 @@ export const useCategoryStore = defineStore('category', {
 
   state: () => ({
     return: {},
-    categories: [
-      {
-        id: 1,
-        name: 'Schule'
-      },
-      {
-        id: 2,
-        name: 'Privat'
-      }
-    ]
+    categories: [],
   }),
 
   persist: true,
