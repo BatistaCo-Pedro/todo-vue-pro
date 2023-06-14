@@ -26,7 +26,6 @@ export default {
 
   methods: {
     submit_todo(new_todo, new_description, new_category_id, new_priority) {
-      console.log("what")
       this.$emit('submit-todo', new_todo, new_description, new_category_id, new_priority)
       this.new_todo = "";
       this.new_category = "";

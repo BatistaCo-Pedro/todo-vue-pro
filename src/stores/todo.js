@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { defineStore } from 'pinia'
 
 //----------------------- Search ---------------------------
@@ -194,11 +195,8 @@ export const useTodoStore = defineStore('todo', {
       })
     },
 
-    addTodo(new_Todo, new_description, new_category_id, new_prority) {
+    async addTodo(new_Todo, new_description, new_category_id, new_prority) {
       let new_id;
-      let new_category;
-      //getting category store to connect category ids to the todos
-      const catStore = useCategoryStore()
 
       //assign new id
       if (this.todos.length) {
@@ -208,27 +206,34 @@ export const useTodoStore = defineStore('todo', {
         new_id = 1;
       }
 
-      //Category Validation as it's not required to give a category
-      if (new_category_id == -1) {
-        new_category = "No Category"
+      console.log(new_prority)
+      let new_prorityNr = 0;
+      switch(new_prority) {
+        case "Low": new_prorityNr = 4;
+          break;
+        case "Medium": new_prorityNr = 3;
+          break;
+          case "High": new_prorityNr = 2;
+          break;
+        case "Highest": new_prorityNr = 1;
+          break;
       }
-      else {
-        new_category = catStore.categories.find(category => {
-          return category.id == new_category_id
-        }).name
-      }
+      console.log(new_prorityNr)
 
-      //push new todo to the todos list
-      this.todos.push({
-        id: new_id,
-        name: new_Todo,
-        description: new_description,
-        category: new_category,
+      await axios.post("https://295.berufsbildung-test.ch/2023/pedro/public/api/todos", 
+      {
+        todo_name: new_Todo, 
+        todo_description: new_description,
+        private_todo: 0,
         categoryId: new_category_id,
-        completed: false,
-        isFavorite: false,
-        priority: new_prority,
-        open: false
+        todo_priorityNr: new_prorityNr,
+      },
+      {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
 
       //hide dahsboard and show "add todo" button again

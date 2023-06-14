@@ -40,8 +40,8 @@ export default {
       this.show_add_button = true;
     },
 
-    submitTodo(new_Todo, new_description, new_category_id, new_priority) {
-      this.addTodo(new_Todo, new_description, new_category_id, new_priority);
+    async submitTodo(new_Todo, new_description, new_category_id, new_priority) {
+      await this.addTodo(new_Todo, new_description, new_category_id, new_priority);
     },
 
     whatFilter(index) {
@@ -85,13 +85,11 @@ export default {
     async getAllCategories() {
       let categoryData = (await axios.get("https://295.berufsbildung-test.ch/2023/pedro/public/api/categories", 
       {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})).data.data
-      console.log(Object.entries(categoryData))
 
       let currentIds = []
       for(let i = 0; i < this.categories.length; i++) {
         currentIds.push(this.categories[i].id)
       }
-      console.log(currentIds)
 
       for(let i = 0; i < Object.keys(categoryData).length; i++) {
         let singlecategoryData = Object.entries(categoryData)[i]
