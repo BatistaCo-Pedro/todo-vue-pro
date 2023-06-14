@@ -235,13 +235,30 @@ export const useTodoStore = defineStore('todo', {
       .catch(function (error) {
         console.log(error);
       });
+  
+      this.todos.push({       
+        todo_name: new_Todo, 
+        todo_description: new_description,
+        private_todo: 0,
+        categoryId: new_category_id,
+        todo_priorityNr: new_prorityNr
+      })
 
       //hide dahsboard and show "add todo" button again
       this.show_add_button = true;
       this.show_dash = false;
     },
 
-    removeTodo(id) {
+    async removeTodo(id) {
+      await axios.delete(`https://295.berufsbildung-test.ch/2023/pedro/public/api/todos/${id}`, 
+      {headers: {"key":"lo348sSadpSe02Sa9d893t2aF788FLLod2ap92nc34y"}})
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
       this.todos = this.todos.filter(todo => {
         return todo.id != id;
       });

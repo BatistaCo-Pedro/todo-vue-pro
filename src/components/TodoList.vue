@@ -41,8 +41,8 @@ export default {
       this.$emit("save-todo")
     },
 
-    remove_todo(id) {
-      this.$emit("remove-todo", id)
+    async remove_todo(id) {
+      await this.$emit("remove-todo", id)
     },
 
     clone_todo(todoData) {
